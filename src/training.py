@@ -39,13 +39,58 @@ class MainWindow(QMainWindow):
         self.RecordPlot = RecordPlotWindow(self)
         self.setCentralWidget(self.RecordPlot)
         self.setWindowTitle("HRC Training")
+
+        self.RecordPlot.awindaButton.setEnabled(False)
+        self.RecordPlot.humanCalibrateButton.setEnabled(False)
+        self.RecordPlot.emgResetButton.setEnabled(False)
+        self.RecordPlot.humanInitiateButton.setEnabled(False)
+        self.RecordPlot.gripperInitiateButton.setEnabled(False)
+        self.RecordPlot.robotMoveButton.setEnabled(False)
+
         self.RecordPlot.roscoreButton.clicked.connect(self.roscore_clicked)
+        self.RecordPlot.awindaButton.clicked.connect(self.awinda_clicked)
+        self.RecordPlot.humanCalibrateButton.clicked.connect(self.humanCalibrate_clicked)
+        self.RecordPlot.emgResetButton.clicked.connect(self.emgReset_clicked)
+        self.RecordPlot.humanInitiateButton.clicked.connect(self.humanInitiate_clicked)
+        self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
+        self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
         self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
         self.show()
 
 
     def roscore_clicked(self):
         self.start_single_roslaunch('/launch/gui.launch')
+        self.RecordPlot.awindaButton.setEnabled(True)
+
+    
+    def awinda_clicked(self):
+        #TODO
+        self.RecordPlot.humanCalibrateButton.setEnabled(True)
+
+
+    def humanCalibrate_clicked(self):
+        #TODO
+        self.RecordPlot.emgResetButton.setEnabled(True)
+        self.RecordPlot.humanInitiateButton.setEnabled(True)
+
+
+    def emgReset_clicked(self):
+        pass
+        
+
+    def humanInitiate_clicked(self):
+        #TODO
+        self.RecordPlot.gripperInitiateButton.setEnabled(True)
+
+
+    def gripperInitiate_clicked(self):
+        #TODO
+        self.RecordPlot.robotMoveButton.setEnabled(True)
+
+
+    def robotMove_clicked(self):
+        pass
+
 
 
     def start_single_roslaunch(self, name):
