@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+    <rosparam command="load" param="gui_start_flag" />
+</launch>
+
+
