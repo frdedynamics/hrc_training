@@ -18,7 +18,7 @@ from Classes.main import Ui_Form as Form_0
 import roslaunch, rospy
 import subprocess
 from pathlib import Path
-from os import popen
+from os import popen, chdir
 
 
 class RecordPlotWindow(QWidget, Form_0):
@@ -60,9 +60,15 @@ class MainWindow(QMainWindow):
 
     def roscore_clicked(self):
         self.start_single_roslaunch('/launch/gui.launch')
+
+        cmd = "ls"
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        user_list = str(proc.stdout.read())
+        self.RecordPlot.roscorelineEdit.insert(user_list)
+
         self.RecordPlot.awindaButton.setEnabled(True)
 
-    
+
     def awinda_clicked(self):
         #TODO
         self.RecordPlot.humanCalibrateButton.setEnabled(True)
@@ -70,6 +76,9 @@ class MainWindow(QMainWindow):
 
     def humanCalibrate_clicked(self):
         #TODO
+        # roslaunch_file = str(self.pkg_path)+'/launch/gui.launch'
+        
+
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
 
