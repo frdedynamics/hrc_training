@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         # f.close()
 
         program = "/launch/gui.launch"
-        arguments = ["-style", "fusion"]
+        arguments = ["-output", "screen"]
 
         myProcess = QProcess(self)
         myProcess.start(program)
@@ -86,10 +86,17 @@ class MainWindow(QMainWindow):
             self.RecordPlot.recordtextEdit.setText(str(i))
             i+=1
 
-        program.kill()
+        myProcess.kill()
         self.RecordPlot.recordtextEdit.setText("Killed")
 
+        program.readyReadStandardOutput.connect(
+            lambda process=program: self.write_process_output(process))
+
         self.RecordPlot.awindaButton.setEnabled(True)
+
+
+    def write_process_output(self, process):
+            self.RecordPlot.recordtextEdit.setText(process.readAllStandardOutput())
 
 
     def awinda_clicked(self):
