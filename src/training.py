@@ -16,7 +16,7 @@ from sensor_msgs.msg import JointState
 from Classes.main import Ui_Form as Form_0
 
 import roslaunch, rospy
-import subprocess
+import subprocess, time
 from pathlib import Path
 from os import popen, chdir
 
@@ -64,7 +64,30 @@ class MainWindow(QMainWindow):
         cmd = "ls"
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         user_list = str(proc.stdout.read())
-        self.RecordPlot.roscorelineEdit.insert(user_list)
+        self.RecordPlot.recordtextEdit.setText(user_list)
+
+
+        ## Maybe better to write in a log file instead of only 
+        # f = open("test.out", 'w')
+        # sys.stdout = f
+        # print "test"
+        # f.close()
+
+        program = "/launch/gui.launch"
+        arguments = ["-style", "fusion"]
+
+        myProcess = QProcess(self)
+        myProcess.start(program)
+
+
+        i=0
+        while i<5:
+            time.sleep(1)
+            self.RecordPlot.recordtextEdit.setText(str(i))
+            i+=1
+
+        program.kill()
+        self.RecordPlot.recordtextEdit.setText("Killed")
 
         self.RecordPlot.awindaButton.setEnabled(True)
 
