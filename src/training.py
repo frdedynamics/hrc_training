@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self.resize(1000, 767)
         self.startRecordPlotWindow()
         self.pkg_path = Path(QDir.currentPath()).parents[0]
+        self.myProcess = QProcess(self)
 
     
     def startRecordPlotWindow(self):
@@ -59,7 +60,7 @@ class MainWindow(QMainWindow):
 
 
     def roscore_clicked(self):
-        self.start_single_roslaunch('/launch/gui.launch')
+        # self.start_single_roslaunch('/launch/gui.launch')
 
         cmd = "ls"
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
@@ -76,8 +77,10 @@ class MainWindow(QMainWindow):
         program = "/launch/gui.launch"
         arguments = ["-output", "screen"]
 
-        myProcess = QProcess(self)
-        myProcess.start(program)
+        
+        self.myProcess.start(program)
+
+        # self.myProcess.readAllStandardOutput().connect(self.write_process_output)
 
 
         i=0
@@ -86,16 +89,16 @@ class MainWindow(QMainWindow):
             self.RecordPlot.recordtextEdit.setText(str(i))
             i+=1
 
-        myProcess.kill()
+        self.myProcess.kill()
         self.RecordPlot.recordtextEdit.setText("Killed")
 
-        program.readyReadStandardOutput.connect(
-            lambda process=program: self.write_process_output(process))
+        # program.readyReadStandardOutput.connect(
+        #     lambda process=program: self.write_process_output(process))
 
         self.RecordPlot.awindaButton.setEnabled(True)
 
 
-    def write_process_output(self, process):
+    def write_process_output(self, process=None):
             self.RecordPlot.recordtextEdit.setText(process.readAllStandardOutput())
 
 
