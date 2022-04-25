@@ -35,6 +35,8 @@ class MainWindow(QMainWindow):
         self.pkg_path = Path(QDir.currentPath()).parents[0]
         self.myProcess = QProcess(self)
 
+        self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
+
     
     def startRecordPlotWindow(self):
         self.RecordPlot = RecordPlotWindow(self)
@@ -56,6 +58,8 @@ class MainWindow(QMainWindow):
         self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
         self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
         self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
+
+        # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
         self.show()
 
 
@@ -74,23 +78,24 @@ class MainWindow(QMainWindow):
         # print "test"
         # f.close()
 
-        program = "/launch/gui.launch"
-        arguments = ["-output", "screen"]
+        program = "roslaunch"
+        args = [str(self.pkg_path)+'/launch/gui.launch']
+        print(program)
 
-        
-        self.myProcess.start(program)
+        self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
+        self.myProcess.start(program, args)
 
         # self.myProcess.readAllStandardOutput().connect(self.write_process_output)
 
 
-        i=0
-        while i<5:
-            time.sleep(1)
-            self.RecordPlot.recordtextEdit.setText(str(i))
-            i+=1
+        # i=0
+        # while i<5:
+        #     time.sleep(1)
+        #     self.RecordPlot.recordtextEdit.setText(str(i))
+        #     i+=1
 
-        self.myProcess.kill()
-        self.RecordPlot.recordtextEdit.setText("Killed")
+        # self.myProcess.kill()
+        self.RecordPlot.recordtextEdit.setText("Started")
 
         # program.readyReadStandardOutput.connect(
         #     lambda process=program: self.write_process_output(process))
@@ -99,7 +104,11 @@ class MainWindow(QMainWindow):
 
 
     def write_process_output(self, process=None):
-            self.RecordPlot.recordtextEdit.setText(process.readAllStandardOutput())
+            # self.RecordPlot.recordtextEdit.setText(str(process.readAllStandardOutput()))
+            data = self.myProcess.readAllStandardOutput()
+            stdout = bytes(data).decode("utf8")
+            self.RecordPlot.recordtextEdit.setText(stdout)
+            print("here")
 
 
     def awinda_clicked(self):
