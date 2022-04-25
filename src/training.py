@@ -21,6 +21,8 @@ import subprocess, time
 from pathlib import Path
 from os import popen, chdir
 
+PKG_PATH = Path(QDir.currentPath()).parents[0]
+
 
 class ThreadSample(QThread):
     newROSout = pyqtSignal(str)
@@ -29,11 +31,11 @@ class ThreadSample(QThread):
         super(ThreadSample, self).__init__(parent)
 
     def run(self):
-        # name = '/launch/gui.launch'
-        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        # roslaunch.configure_logging(uuid)
-        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
-        # self.launch.start()
+        name = '/launch/gui.launch'
+        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        roslaunch.configure_logging(uuid)
+        self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(PKG_PATH)+name])
+        self.launch.start()
         randomSample = "hello world"
 
         self.newROSout.emit(randomSample)
