@@ -21,12 +21,12 @@ def talker():
         rospy.loginfo(hello_str)
         pub.publish(hello_str)
 
-        sys.stdout.write("Script stdout 1\n")
-        sys.stdout.write("Script stdout 2\n")
-        sys.stdout.write("Script stdout 3\n")
-        sys.stderr.write("Total time: 00:05:00\n")
-        sys.stderr.write("Total complete: 10%\n")
-        flush_then_wait()
+        # sys.stdout.write("Script stdout 1\n")
+        # sys.stdout.write("Script stdout 2\n")
+        # sys.stdout.write("Script stdout 3\n")
+        # sys.stderr.write("Total time: 00:05:00\n")
+        # sys.stderr.write("Total complete: 10%\n")
+        # flush_then_wait()
 
 
         rate.sleep()
