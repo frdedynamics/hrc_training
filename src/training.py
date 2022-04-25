@@ -24,11 +24,11 @@ from os import popen, chdir
 PKG_PATH = Path(QDir.currentPath()).parents[0]
 
 
-class ThreadSample(QThread):
+class ROSProcess(QProcess):
     newROSout = pyqtSignal(str)
 
     def __init__(self, parent=None):
-        super(ThreadSample, self).__init__(parent)
+        super(ROSProcess, self).__init__(parent)
 
     def run(self):
         name = '/launch/gui.launch'
@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
         self.resize(1000, 767)
         self.startRecordPlotWindow()
         self.pkg_path = Path(QDir.currentPath()).parents[0]
-        self.myThread = ThreadSample(self)
+        self.myThread = ROSProcess(self)
         self.myThread.newROSout.connect(self.write_process_output)
 
         # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
@@ -87,6 +87,7 @@ class MainWindow(QMainWindow):
     def roscore_clicked(self):
 
         self.myThread.start()
+        self.myThread.run()
 
         # self.start_single_roslaunch('/launch/gui.launch')
 
