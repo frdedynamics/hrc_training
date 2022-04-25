@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from pty import CHILD
 from socket import timeout
+from tokenize import String
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -21,6 +22,23 @@ from pathlib import Path
 from os import popen, chdir
 
 
+class ThreadSample(QThread):
+    newROSout = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        super(ThreadSample, self).__init__(parent)
+
+    def run(self):
+        # name = '/launch/gui.launch'
+        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        # roslaunch.configure_logging(uuid)
+        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
+        # self.launch.start()
+        randomSample = "hello world"
+
+        self.newROSout.emit(randomSample)
+
+
 class RecordPlotWindow(QWidget, Form_0):
     def __init__(self, parent=None):
         super(RecordPlotWindow, self).__init__(parent)
@@ -33,9 +51,10 @@ class MainWindow(QMainWindow):
         self.resize(1000, 767)
         self.startRecordPlotWindow()
         self.pkg_path = Path(QDir.currentPath()).parents[0]
-        self.myProcess = QProcess(self)
+        self.myThread = ThreadSample(self)
+        self.myThread.newROSout.connect(self.write_process_output)
 
-        self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
+        # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
 
     
     def startRecordPlotWindow(self):
@@ -64,12 +83,15 @@ class MainWindow(QMainWindow):
 
 
     def roscore_clicked(self):
+
+        self.myThread.start()
+
         # self.start_single_roslaunch('/launch/gui.launch')
 
-        cmd = "ls"
-        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        user_list = str(proc.stdout.read())
-        self.RecordPlot.recordtextEdit.setText(user_list)
+        # cmd = "ls"
+        # proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        # user_list = str(proc.stdout.read())
+        # self.RecordPlot.recordtextEdit.setText(user_list)
 
 
         ## Maybe better to write in a log file instead of only 
@@ -78,12 +100,12 @@ class MainWindow(QMainWindow):
         # print "test"
         # f.close()
 
-        program = "roslaunch"
-        args = [str(self.pkg_path)+'/launch/gui.launch']
-        print(program)
+        # program = "roslaunch"
+        # args = [str(self.pkg_path)+'/launch/gui.launch']
+        # print(program)
 
-        self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
-        self.myProcess.start(program, args)
+        # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
+        # self.myProcess.start(program, args)
 
         # self.myProcess.readAllStandardOutput().connect(self.write_process_output)
 
@@ -103,12 +125,10 @@ class MainWindow(QMainWindow):
         self.RecordPlot.awindaButton.setEnabled(True)
 
 
-    def write_process_output(self, process=None):
-            # self.RecordPlot.recordtextEdit.setText(str(process.readAllStandardOutput()))
-            data = self.myProcess.readAllStandardOutput()
-            stdout = bytes(data).decode("utf8")
-            self.RecordPlot.recordtextEdit.setText(stdout)
-            print("here")
+    @pyqtSlot(str)
+    def write_process_output(self, output):
+        self.RecordPlot.recordtextEdit.setText(output)
+        print("here")
 
 
     def awinda_clicked(self):
@@ -148,7 +168,16 @@ class MainWindow(QMainWindow):
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(uuid)
         self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
-        self.launch.start()
+        # self.launch.start()
+
+        # Read cmd output
+        cmd = "roslaunch "+str(self.pkg_path)+name
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        user_list = str(proc.stdout.read())
+        self.RecordPlot.recordtextEdit.setText(user_list)
+
+        # Emit a signal there
+        self.newSample.emit(user_list)
 
     def stop_all_roslaunch(self):
         self.launch.shutdown()
