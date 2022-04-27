@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self.resize(1000, 767)
         self.startRecordPlotWindow()
         self.pkg_path = Path(QDir.currentPath()).parents[0]
+        self.launch = roslaunch.scriptapi.ROSLaunch()
 
     
     def startRecordPlotWindow(self):
@@ -61,10 +62,10 @@ class MainWindow(QMainWindow):
     def roscore_clicked(self):
         self.start_single_roslaunch('/launch/gui.launch')
 
-        cmd = "ls"
-        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        user_list = str(proc.stdout.read())
-        self.RecordPlot.recordtextEdit.setText(user_list)
+        # cmd = "ls"
+        # proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        # user_list = str(proc.stdout.read())
+        # self.RecordPlot.recordtextEdit.setText(user_list)
 
 
         ## Maybe better to write in a log file instead of only 
@@ -73,34 +74,12 @@ class MainWindow(QMainWindow):
         # print "test"
         # f.close()
 
-        program = "/launch/gui.launch"
-        arguments = ["-output", "screen"]
-
-        myProcess = QProcess(self)
-        myProcess.start(program)
-
-
-        i=0
-        while i<5:
-            time.sleep(1)
-            self.RecordPlot.recordtextEdit.setText(str(i))
-            i+=1
-
-        myProcess.kill()
-        self.RecordPlot.recordtextEdit.setText("Killed")
-
-        program.readyReadStandardOutput.connect(
-            lambda process=program: self.write_process_output(process))
-
         self.RecordPlot.awindaButton.setEnabled(True)
-
-
-    def write_process_output(self, process):
-            self.RecordPlot.recordtextEdit.setText(process.readAllStandardOutput())
-
 
     def awinda_clicked(self):
         #TODO
+        self.add_rosnode("hrc_training", "test2.py")
+        # self.RecordPlot.awndalineEdit.setText(str(type(self.launch)))
         self.RecordPlot.humanCalibrateButton.setEnabled(True)
 
 
@@ -131,12 +110,17 @@ class MainWindow(QMainWindow):
         pass
 
 
-
     def start_single_roslaunch(self, name):
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(uuid)
-        self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
+        self.launch.parent = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
         self.launch.start()
+
+    
+    def add_rosnode(self, pkg_name, node_name, args=None):
+        node = roslaunch.core.Node(pkg_name, node_name)
+        self.launch.launch(node)
+        self.RecordPlot.awndalineEdit.setText(str(type(self.launch)))
 
     def stop_all_roslaunch(self):
         self.launch.shutdown()

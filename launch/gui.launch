@@ -2,7 +2,7 @@
 
 <launch>
     <rosparam command="load" param="gui_start_flag" />
-    <node pkg="hrc_training" name="test" type="test.py" output="screen"/>
+    <node pkg="hrc_training" name="test" type="test.py"/>
 
 </launch>
 
