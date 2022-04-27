@@ -30,12 +30,13 @@ class ROSProcess(QProcess):
     def __init__(self, parent=None):
         super(ROSProcess, self).__init__(parent)
 
-    def run(self):
-        name = '/launch/gui.launch'
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(uuid)
-        self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(PKG_PATH)+name])
-        self.launch.start()
+    def run(self, name):
+        # name = '/launch/gui.launch'
+
+        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        # roslaunch.configure_logging(uuid)
+        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(PKG_PATH)+name])
+        # self.launch.start()
         randomSample = "hello world"
 
         self.newROSout.emit(randomSample)
@@ -86,8 +87,10 @@ class MainWindow(QMainWindow):
 
     def roscore_clicked(self):
 
+        # res, pid = self.myThread.startDetached()
+        # print(res, pid)
         self.myThread.start()
-        self.myThread.run()
+        self.myThread.run('/launch/gui.launch')
 
         # self.start_single_roslaunch('/launch/gui.launch')
 
@@ -128,10 +131,10 @@ class MainWindow(QMainWindow):
         self.RecordPlot.awindaButton.setEnabled(True)
 
 
-    @pyqtSlot(str)
+    @pyqtSlot(str) # Overloaded decorator for slot https://docs.huihoo.com/pyqt/PyQt5/signals_slots.html
     def write_process_output(self, output):
-        self.RecordPlot.recordtextEdit.setText(output)
-        print("here")
+        self.RecordPlot.recordtextEdit.append(output)
+        print(output)
 
 
     def awinda_clicked(self):
