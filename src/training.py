@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from pty import CHILD
 from socket import timeout
+from tokenize import String
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -20,6 +21,26 @@ import subprocess, time
 from pathlib import Path
 from os import popen, chdir
 
+PKG_PATH = Path(QDir.currentPath()).parents[0]
+
+
+class ROSProcess(QProcess):
+    newROSout = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        super(ROSProcess, self).__init__(parent)
+
+    def run(self, name):
+        # name = '/launch/gui.launch'
+
+        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        # roslaunch.configure_logging(uuid)
+        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(PKG_PATH)+name])
+        # self.launch.start()
+        randomSample = "hello world"
+
+        self.newROSout.emit(randomSample)
+
 
 class RecordPlotWindow(QWidget, Form_0):
     def __init__(self, parent=None):
@@ -34,6 +55,8 @@ class MainWindow(QMainWindow):
         self.startRecordPlotWindow()
         self.pkg_path = Path(QDir.currentPath()).parents[0]
         self.launch = roslaunch.scriptapi.ROSLaunch()
+
+        # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
 
     
     def startRecordPlotWindow(self):
@@ -56,11 +79,19 @@ class MainWindow(QMainWindow):
         self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
         self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
         self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
+
+        # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
         self.show()
 
 
     def roscore_clicked(self):
-        self.start_single_roslaunch('/launch/gui.launch')
+
+        # cmd = "ls"
+        # proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        # user_list = str(proc.stdout.read())
+        # self.RecordPlot.recordtextEdit.setText(user_list)
+
+        # self.start_single_roslaunch('/launch/gui.launch')
 
         # cmd = "ls"
         # proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
