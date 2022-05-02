@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from pty import CHILD
 from socket import timeout
-from tokenize import String
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -13,6 +12,7 @@ from math import pi
 import sys, random
 from shutil import copy
 from sensor_msgs.msg import JointState
+from std_msgs.msg import String
 
 from Classes.main import Ui_Form as Form_0
 
@@ -22,24 +22,6 @@ from pathlib import Path
 from os import popen, chdir
 
 PKG_PATH = Path(QDir.currentPath()).parents[0]
-
-
-class ROSProcess(QProcess):
-    newROSout = pyqtSignal(str)
-
-    def __init__(self, parent=None):
-        super(ROSProcess, self).__init__(parent)
-
-    def run(self, name):
-        # name = '/launch/gui.launch'
-
-        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        # roslaunch.configure_logging(uuid)
-        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [str(PKG_PATH)+name])
-        # self.launch.start()
-        randomSample = "hello world"
-
-        self.newROSout.emit(randomSample)
 
 
 class RecordPlotWindow(QWidget, Form_0):
@@ -56,7 +38,10 @@ class MainWindow(QMainWindow):
         self.pkg_path = Path(QDir.currentPath()).parents[0]
         self.launch = roslaunch.scriptapi.ROSLaunch()
 
-        # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
+        self.timer=QTimer()
+        self.timer.timeout.connect(self.rosSpin)
+
+        self.test_var = String()
 
     
     def startRecordPlotWindow(self):
@@ -83,8 +68,17 @@ class MainWindow(QMainWindow):
         # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
         self.show()
 
+    
+
 
     def roscore_clicked(self):
+        rospy.init_node('hrc_gui_training', anonymous=False)
+        self.sub_test = rospy.Subscriber("/chatter", String, self.test_cb)
+        self.timer.start(10)
+
+
+
+        self.start_single_roslaunch('/launch/gui.launch')
 
         # cmd = "ls"
         # proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
@@ -147,15 +141,27 @@ class MainWindow(QMainWindow):
         self.launch.parent = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
         self.launch.start()
 
-    
     def add_rosnode(self, pkg_name, node_name, args=None):
         node = roslaunch.core.Node(pkg_name, node_name)
         self.launch.launch(node)
         self.RecordPlot.awndalineEdit.setText(str(type(self.launch)))
 
     def stop_all_roslaunch(self):
+        self.timer.stop()
         self.launch.shutdown()
+        p = popen("rosnode kill /hrc_training_gui")
         p = popen("killall -9 roscore")
+
+    def test_cb(self, msg):
+        self.test_var = msg
+    
+    def rosSpin(self):
+        # rate = rospy.Rate(10)
+        # rate.sleep()
+        rospy.spin()
+        print(self.test_var.data)
+        
+        
 
 
     # def start_roslaunch(self):
