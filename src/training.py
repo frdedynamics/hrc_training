@@ -11,17 +11,18 @@ from math import pi
 
 import sys, random
 from shutil import copy
-from sensor_msgs.msg import JointState
-from std_msgs.msg import String
+
 
 from Classes.main import Ui_Form as Form_0
+from Classes.gui_node_class import GUInode
 
-import roslaunch, rospy
+import roslaunch
 import subprocess, time
 from pathlib import Path
 from os import popen, chdir
 
 PKG_PATH = Path(QDir.currentPath()).parents[0]
+gui_node = GUInode()
 
 
 class RecordPlotWindow(QWidget, Form_0):
@@ -38,10 +39,10 @@ class MainWindow(QMainWindow):
         self.pkg_path = Path(QDir.currentPath()).parents[0]
         self.launch = roslaunch.scriptapi.ROSLaunch()
 
-        self.timer=QTimer()
-        self.timer.timeout.connect(self.rosSpin)
-
-        self.test_var = String()
+        self.rosTimer=QTimer()
+        self.guiTimer=QTimer()
+        self.rosTimer.timeout.connect(gui_node.update)
+        self.guiTimer.timeout.connect(self.gui_update)
 
     
     def startRecordPlotWindow(self):
@@ -68,30 +69,12 @@ class MainWindow(QMainWindow):
         # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
         self.show()
 
-    
-
 
     def roscore_clicked(self):
-        rospy.init_node('hrc_gui_training', anonymous=False)
-        self.sub_test = rospy.Subscriber("/chatter", String, self.test_cb)
-        self.timer.start(10)
-
-
-
+        self.rosTimer.start(10)
+        self.guiTimer.start(500)
+        GUInode.init_subscribers_and_publishers()
         self.start_single_roslaunch('/launch/gui.launch')
-
-        # cmd = "ls"
-        # proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        # user_list = str(proc.stdout.read())
-        # self.RecordPlot.recordtextEdit.setText(user_list)
-
-        # self.start_single_roslaunch('/launch/gui.launch')
-
-        # cmd = "ls"
-        # proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        # user_list = str(proc.stdout.read())
-        # self.RecordPlot.recordtextEdit.setText(user_list)
-
 
         ## Maybe better to write in a log file instead of only 
         # f = open("test.out", 'w')
@@ -101,18 +84,16 @@ class MainWindow(QMainWindow):
 
         self.RecordPlot.awindaButton.setEnabled(True)
 
+
     def awinda_clicked(self):
         #TODO
-        self.add_rosnode("hrc_training", "test2.py")
-        # self.RecordPlot.awndalineEdit.setText(str(type(self.launch)))
+        # self.add_rosnode("hrc_training", "test2.py")
         self.RecordPlot.humanCalibrateButton.setEnabled(True)
 
 
     def humanCalibrate_clicked(self):
         #TODO
         # roslaunch_file = str(self.pkg_path)+'/launch/gui.launch'
-        
-
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
 
@@ -139,6 +120,7 @@ class MainWindow(QMainWindow):
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(uuid)
         self.launch.parent = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
+        self.RecordPlot.awndalineEdit.setText(str(self.test_count))
         self.launch.start()
 
     def add_rosnode(self, pkg_name, node_name, args=None):
@@ -147,19 +129,14 @@ class MainWindow(QMainWindow):
         self.RecordPlot.awndalineEdit.setText(str(type(self.launch)))
 
     def stop_all_roslaunch(self):
-        self.timer.stop()
+        self.rosTimer.stop()
+        self.guiTimer.stop()
         self.launch.shutdown()
         p = popen("rosnode kill /hrc_training_gui")
         p = popen("killall -9 roscore")
-
-    def test_cb(self, msg):
-        self.test_var = msg
     
-    def rosSpin(self):
-        # rate = rospy.Rate(10)
-        # rate.sleep()
-        rospy.spin()
-        print(self.test_var.data)
+    def gui_update(self):
+        self.RecordPlot.awndalineEdit.setText(str(gui_node.test_count))
         
         
 
