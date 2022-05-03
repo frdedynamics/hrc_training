@@ -73,15 +73,8 @@ class MainWindow(QMainWindow):
     def roscore_clicked(self):
         self.rosTimer.start(10)
         self.guiTimer.start(500)
-        GUInode.init_subscribers_and_publishers()
-        self.start_single_roslaunch('/launch/gui.launch')
-
-        ## Maybe better to write in a log file instead of only 
-        # f = open("test.out", 'w')
-        # sys.stdout = f
-        # print "test"
-        # f.close()
-
+        gui_node.init_subscribers_and_publishers()
+        # self.start_single_roslaunch('/launch/gui.launch') # I need this
         self.RecordPlot.awindaButton.setEnabled(True)
 
 
@@ -137,25 +130,9 @@ class MainWindow(QMainWindow):
     
     def gui_update(self):
         self.RecordPlot.awndalineEdit.setText(str(gui_node.test_count))
+        gui_node.update()
+        gui_node.r.sleep()
         
-        
-
-
-    # def start_roslaunch(self):
-    #     rospy.init_node('robot_designer', anonymous=False)
-    #     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-    #     roslaunch.configure_logging(uuid)
-    #     self.launch = roslaunch.parent.ROSLaunchParent(uuid, ["/home/gizem/catkin_ws/src/dh_game/launch/mrm.launch"])
-    #     self.launch.start()
-    #     self.sub_joint_states = rospy.Subscriber("/joint_states", JointState, self.cb_joint_states)
-    #     self.pub_dh_table_theta = rospy.Publisher("/dh_table_theta", JointState, queue_size=10)
-    #     self.pub_dh_table_s = rospy.Publisher("/dh_table_s", JointState, queue_size=10)
-    #     self.pub_dh_table_d = rospy.Publisher("/dh_table_d", JointState, queue_size=10)
-    #     self.pub_dh_table_alpha = rospy.Publisher("/dh_table_alpha", JointState, queue_size=10)
-    #     rospy.loginfo("started")
-
-    #     print(self.TasksTool.task_selection)
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

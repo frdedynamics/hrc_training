@@ -24,7 +24,7 @@ class GUInode:
         
 
     def init_subscribers_and_publishers(self):
-        self.sub_test = rospy.Subscriber("/chatter", String, self.test_cb)
+        self.sub_test = rospy.Subscriber("chatter", String, self.test_cb)
 
     # def data_logger_enabler(self):
     #     print "enable_logging"
@@ -34,10 +34,12 @@ class GUInode:
         self.test_count+=1
         print(self.test_count)
         print(self.test_var)
+        self.r.sleep()
 
         # self.pub_p_hand.publish(self.p_hand)
 
     def test_cb(self, msg):
         self.test_var = msg
+        print("here")
 
     
