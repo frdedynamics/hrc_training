@@ -9,8 +9,8 @@ from PyQt5.QtCore import *
 import pandas as pd
 from math import pi
 
-import sys, random
-from shutil import copy
+import sys, subprocess
+from os import chdir
 
 
 from Classes.main import Ui_Form as Form_0
@@ -22,7 +22,6 @@ from pathlib import Path
 from os import popen, chdir
 
 PKG_PATH = Path(QDir.currentPath()).parents[0]
-gui_node = GUInode()
 
 
 class RecordPlotWindow(QWidget, Form_0):
@@ -39,9 +38,10 @@ class MainWindow(QMainWindow):
         self.pkg_path = Path(QDir.currentPath()).parents[0]
         self.launch = roslaunch.scriptapi.ROSLaunch()
 
+        self.ros_node = GUInode()
         self.rosTimer=QTimer()
         self.guiTimer=QTimer()
-        self.rosTimer.timeout.connect(gui_node.update)
+        self.rosTimer.timeout.connect(self.ros_node.update)
         self.guiTimer.timeout.connect(self.gui_update)
 
     
@@ -66,27 +66,33 @@ class MainWindow(QMainWindow):
         self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
         self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
 
-        # self.myProcess.readyReadStandardOutput.connect(self.write_process_output)
+        self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
+
         self.show()
 
 
     def roscore_clicked(self):
         self.rosTimer.start(10)
         self.guiTimer.start(500)
-        gui_node.init_subscribers_and_publishers()
-        # self.start_single_roslaunch('/launch/gui.launch') # I need this
+        self.ros_node.init_subscribers_and_publishers()
+        self.start_single_roslaunch('/launch/gui.launch') # I need this to set a UUID for later added nodes
+        
         self.RecordPlot.awindaButton.setEnabled(True)
 
 
     def awinda_clicked(self):
-        #TODO
-        # self.add_rosnode("hrc_training", "test2.py")
+        self.add_rosnode("awindamonitor", "awindamonitor")
         self.RecordPlot.humanCalibrateButton.setEnabled(True)
-
+        
 
     def humanCalibrate_clicked(self):
-        #TODO
-        # roslaunch_file = str(self.pkg_path)+'/launch/gui.launch'
+        # self.add_rosnode(node_name="myo-rawNode.py", pkg_name="ros_myo")
+        # self.add_rosnode("world_to_myo.py", "arm_motion_controller_py3")
+        # self.add_rosnode("rviz", "rviz", args="-d $(find arm_motion_controller_py3)/launch/config/config_with_myo.rviz")
+        subprocess.run(["sh", "../sh/human_with_myo.sh"])
+
+
+
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
 
@@ -113,25 +119,25 @@ class MainWindow(QMainWindow):
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(uuid)
         self.launch.parent = roslaunch.parent.ROSLaunchParent(uuid, [str(self.pkg_path)+name])
-        self.RecordPlot.awndalineEdit.setText(str(self.test_count))
+        self.RecordPlot.recordtextEdit.append(name+" started")
         self.launch.start()
 
     def add_rosnode(self, pkg_name, node_name, args=None):
-        node = roslaunch.core.Node(pkg_name, node_name)
+        node = roslaunch.core.Node(pkg_name, node_name, args)
         self.launch.launch(node)
-        self.RecordPlot.awndalineEdit.setText(str(type(self.launch)))
+        self.RecordPlot.recordtextEdit.append(node_name+" in "+pkg_name+" is started")
 
     def stop_all_roslaunch(self):
         self.rosTimer.stop()
         self.guiTimer.stop()
         self.launch.shutdown()
-        p = popen("rosnode kill /hrc_training_gui")
-        p = popen("killall -9 roscore")
+        p_node_kill = popen("rosnode kill /hrc_training_gui")
+        p_kill = popen("killall -9 roscore") ## does not kill all roscore
     
     def gui_update(self):
-        self.RecordPlot.awndalineEdit.setText(str(gui_node.test_count))
-        gui_node.update()
-        gui_node.r.sleep()
+        self.RecordPlot.awndalineEdit.setText(str(self.ros_node.test_count))
+        self.ros_node.update()
+        self.ros_node.r.sleep()
         
 
 if __name__ == '__main__':

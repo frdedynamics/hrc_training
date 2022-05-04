@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This is a place holder GUI launch so that new nodes can ben added based on this launch files UUID. Maybe I can consider starting awindamonitor here later -->
 
 <launch>
     <rosparam command="load" param="gui_start_flag" />
-    <node pkg="hrc_training" name="test2" type="test2.py"/>
+    <node pkg="hrc_training" name="test" type="test.py"/>
 
 </launch>
 

@@ -31,15 +31,12 @@ class GUInode:
     #     data_logger.enable_logging()
 
     def update(self):
-        self.test_count+=1
-        print(self.test_count)
-        print(self.test_var)
+        # self.test_count+=1
         self.r.sleep()
 
         # self.pub_p_hand.publish(self.p_hand)
 
     def test_cb(self, msg):
         self.test_var = msg
-        print("here")
 
     
