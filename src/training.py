@@ -9,9 +9,7 @@ from PyQt5.QtCore import *
 import pandas as pd
 from math import pi
 
-import sys, subprocess
-from os import chdir
-
+import sys
 
 from Classes.main import Ui_Form as Form_0
 from Classes.gui_node_class import GUInode
@@ -43,6 +41,8 @@ class MainWindow(QMainWindow):
         self.guiTimer=QTimer()
         self.rosTimer.timeout.connect(self.ros_node.update)
         self.guiTimer.timeout.connect(self.gui_update)
+
+        self.human_with_myo_proc = None
 
     
     def startRecordPlotWindow(self):
@@ -81,7 +81,8 @@ class MainWindow(QMainWindow):
 
 
     def awinda_clicked(self):
-        self.add_rosnode("awindamonitor", "awindamonitor")
+        self.human_with_myo_proc = subprocess.Popen(["sh", "../sh/human_with_myo.sh"], stdin=subprocess.PIPE)
+        # self.add_rosnode("awindamonitor", "awindamonitor")
         self.RecordPlot.humanCalibrateButton.setEnabled(True)
         
 
@@ -89,7 +90,8 @@ class MainWindow(QMainWindow):
         # self.add_rosnode(node_name="myo-rawNode.py", pkg_name="ros_myo")
         # self.add_rosnode("world_to_myo.py", "arm_motion_controller_py3")
         # self.add_rosnode("rviz", "rviz", args="-d $(find arm_motion_controller_py3)/launch/config/config_with_myo.rviz")
-        subprocess.run(["sh", "../sh/human_with_myo.sh"])
+        # subprocess.run(["sh", "../sh/human_with_myo.sh"]) // this will halt the system. You will use Popen: https://stackoverflow.com/questions/16855642/execute-a-shell-script-from-python-subprocess
+        p_kill = subprocess.Popen(["pkill", "-9", "ros"])
 
 
 
@@ -128,12 +130,15 @@ class MainWindow(QMainWindow):
         self.RecordPlot.recordtextEdit.append(node_name+" in "+pkg_name+" is started")
 
     def stop_all_roslaunch(self):
+        p_kill = subprocess.Popen(["pkill", "-9", "ros"])
         self.rosTimer.stop()
         self.guiTimer.stop()
-        self.launch.shutdown()
-        p_node_kill = popen("rosnode kill /hrc_training_gui")
-        p_kill = popen("killall -9 roscore") ## does not kill all roscore
-    
+        # self.launch.shutdown()
+        self.human_with_myo_proc.kill()
+        # p_node_kill = popen("rosnode kill /hrc_training_gui")
+        # p_kill = popen("killall -9 roscore") ## does not kill all roscore
+        p_kill = subprocess.Popen(["pkill", "-9", "ros"])
+
     def gui_update(self):
         self.RecordPlot.awndalineEdit.setText(str(self.ros_node.test_count))
         self.ros_node.update()

@@ -41,3 +41,4 @@ if __name__ == '__main__':
         talker()
     except rospy.ROSInterruptException:
         pass
+    # p_kill = subprocess.Popen(["pkill", "-9", "ros"])
