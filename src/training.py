@@ -10,6 +10,7 @@ import pandas as pd
 from math import pi
 
 import sys
+from time import sleep
 
 from Classes.main import Ui_Form as Form_0
 from Classes.gui_node_class import GUInode
@@ -65,6 +66,7 @@ class MainWindow(QMainWindow):
         self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
         self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
         self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
+
 
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
 
