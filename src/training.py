@@ -87,7 +87,7 @@ class MainWindow(QMainWindow):
 
 
     def awinda_clicked(self):
-        self.add_rosnode("awindamonitor", "awindamonitor")
+        self.add_rosnode("awindamonitor", "awindamonitor", "awindamonitor")
         self.RecordPlot.humanCalibrateButton.setEnabled(True)
         
 
@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
         self.RecordPlot.recordtextEdit.append("Human joints are resetting")
         subprocess.Popen(["rosnode", "kill", "/imu_subscriber_node"])
         sleep(1.0)
-        self.add_rosnode("arm_motion_controller_py3", "imu_subscriber_node.py")
+        self.add_rosnode("arm_motion_controller_py3", "imu_subscriber_node.py", "imu_subscriber_node")
         self.RecordPlot.recordtextEdit.append("Human joint reset DONE")
         self.RecordPlot.humanJointResetButton.setEnabled(True)
         # TODO: check if EMG sum is changing over time
@@ -130,7 +130,7 @@ class MainWindow(QMainWindow):
         
 
     def humanInitiate_clicked(self):
-        self.add_rosnode("wrist_to_robot_2arms.py", "arm_motion_controller_py3")
+        self.add_rosnode("arm_motion_controller_py3", "wrist_to_robot_2arms.py", "wrist_to_robot_2arms")
         self.RecordPlot.recordtextEdit.append("Move to initial arm poses in 4 seconds...")
         sleep(1)
         self.RecordPlot.recordtextEdit.append("3 seconds...")
@@ -160,8 +160,8 @@ class MainWindow(QMainWindow):
         self.RecordPlot.recordtextEdit.append(name+" started")
         self.launch.start()
 
-    def add_rosnode(self, pkg_name, node_name, args=None):
-        node = roslaunch.core.Node(pkg_name, node_name, args)
+    def add_rosnode(self, pkg_name, node_name, name, args=None, respawn=True):
+        node = roslaunch.core.Node(pkg_name, node_name, name, args)
         self.launch.launch(node)
         self.RecordPlot.recordtextEdit.append(node_name+" in "+pkg_name+" is started")
 
