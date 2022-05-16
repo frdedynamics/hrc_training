@@ -339,6 +339,31 @@
      <enum>QFrame::Raised</enum>
     </property>
    </widget>
+   <zorder>frame_2</zorder>
+   <zorder>loggingcheckBox</zorder>
+   <zorder>humanInitiateButton</zorder>
+   <zorder>robotMoveButton</zorder>
+   <zorder>awindaButton</zorder>
+   <zorder>roscoreButton</zorder>
+   <zorder>newUserButton</zorder>
+   <zorder>userRecordComboBox</zorder>
+   <zorder>recordtextEdit</zorder>
+   <zorder>roscorelineEdit</zorder>
+   <zorder>awndalineEdit</zorder>
+   <zorder>humanCalibratelineEdit</zorder>
+   <zorder>humanInitiatelineEdit</zorder>
+   <zorder>emgLabel</zorder>
+   <zorder>emglineEdit</zorder>
+   <zorder>emgResetButton</zorder>
+   <zorder>robotInitiatelineEdit</zorder>
+   <zorder>buttonBox</zorder>
+   <zorder>gripperInitiateButton</zorder>
+   <zorder>gripperInitiatelineEdit</zorder>
+   <zorder>mode1radioButton</zorder>
+   <zorder>mode2radioButton</zorder>
+   <zorder>frame</zorder>
+   <zorder>humanCalibrateButton</zorder>
+   <zorder>humanJointResetButton</zorder>
   </widget>
   <widget class="QGroupBox" name="plotgroupBox">
    <property name="geometry">

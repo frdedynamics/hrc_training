@@ -56,6 +56,7 @@ class MainWindow(QMainWindow):
 
         self.RecordPlot.awindaButton.setEnabled(False)
         self.RecordPlot.humanCalibrateButton.setEnabled(False)
+        self.RecordPlot.humanJointResetButton.setEnabled(False)
         self.RecordPlot.emgResetButton.setEnabled(False)
         self.RecordPlot.humanInitiateButton.setEnabled(False)
         self.RecordPlot.gripperInitiateButton.setEnabled(False)
@@ -64,6 +65,7 @@ class MainWindow(QMainWindow):
         self.RecordPlot.roscoreButton.clicked.connect(self.roscore_clicked)
         self.RecordPlot.awindaButton.clicked.connect(self.awinda_clicked)
         self.RecordPlot.humanCalibrateButton.clicked.connect(self.humanCalibrate_clicked)
+        self.RecordPlot.humanJointResetButton.clicked.connect(self.humanJointReset_clicked)
         self.RecordPlot.emgResetButton.clicked.connect(self.emgReset_clicked)
         self.RecordPlot.humanInitiateButton.clicked.connect(self.humanInitiate_clicked)
         self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
@@ -94,12 +96,25 @@ class MainWindow(QMainWindow):
         # self.add_rosnode("world_to_myo.py", "arm_motion_controller_py3")
         # self.add_rosnode("rviz", "rviz", args="-d $(find arm_motion_controller_py3)/launch/config/config_with_myo.rviz")
         self.human_proc = subprocess.Popen(["sh", "../sh/human.sh"]) ## this will halt the system. You will use Popen: https://stackoverflow.com/questions/16855642/execute-a-shell-script-from-python-subprocess
+        sleep(1.0)
         self.myo_proc = subprocess.Popen(["sh", "../sh/myo.sh"]) 
 
         # TODO: human joint reset button
 
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
+        self.RecordPlot.humanJointResetButton.setEnabled(True)
+
+    
+    def humanJointReset_clicked(self):
+        self.RecordPlot.humanJointResetButton.setEnabled(False)
+        self.RecordPlot.recordtextEdit.append("Human joints are resetting")
+        subprocess.Popen(["rosnode", "kill", "/imu_subscriber_node"])
+        sleep(1.0)
+        self.add_rosnode("arm_motion_controller_py3", "imu_subscriber_node.py")
+        self.RecordPlot.recordtextEdit.append("Human joint reset DONE")
+        self.RecordPlot.humanJointResetButton.setEnabled(True)
+        # TODO: check if EMG sum is changing over time
 
 
     def emgReset_clicked(self):
@@ -107,7 +122,7 @@ class MainWindow(QMainWindow):
         self.RecordPlot.recordtextEdit.append("EMG resetting")
         subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_to_gripper", "/world_to_myo_tf_publisher"])
         sleep(2.0)
-        subprocess.run(["sh", "../sh/myo.sh"])
+        subprocess.Popen(["sh", "../sh/myo.sh"])
         self.RecordPlot.recordtextEdit.append("EMG reset DONE")
         self.RecordPlot.emgResetButton.setEnabled(True)
         # TODO: check if EMG sum is changing over time
