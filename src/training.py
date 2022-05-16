@@ -11,6 +11,7 @@ from math import pi
 
 import sys
 from time import sleep
+from os import chdir
 
 from Classes.main import Ui_Form as Form_0
 from Classes.gui_node_class import GUInode
@@ -34,7 +35,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.resize(1000, 767)
         self.startRecordPlotWindow()
-        self.pkg_path = Path(QDir.currentPath()).parents[0]
+        self.pkg_path = Path(QDir.currentPath()).parents[0]  ##(?) QDir() instead? check later
         self.launch = roslaunch.scriptapi.ROSLaunch()
 
         self.ros_node = GUInode()
@@ -145,7 +146,15 @@ class MainWindow(QMainWindow):
 
 
     def gripperInitiate_clicked(self):
-        #TODO
+        gripper_process = subprocess.Popen(["rospack", "find", "robotiq_urcap_control"], stdout=subprocess.PIPE)
+        gripper_ros_path = str(gripper_process.stdout.readline())[2:-3]
+        chdir(gripper_ros_path+'/src/')
+        # gripper_process = subprocess.Popen(["ls"], stdout=subprocess.PIPE)
+        # stdout = str(gripper_process.stdout.readlines())
+        # print('STDOUT:{}'.format(stdout))
+        # sys.exit()
+        self.gripper_proc1 = subprocess.Popen(["python3", "robotic_urcap_ctrl_py3.py", "172.31.1.144"]) # robot ip
+        self.add_rosnode("ros_magic_pkg", "map_robotiq_to_topic_bool.py", "map_robotiq_to_topic_bool")
         self.RecordPlot.robotMoveButton.setEnabled(True)
 
 
