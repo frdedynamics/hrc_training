@@ -44,6 +44,9 @@ class MainWindow(QMainWindow):
         self.guiTimer.timeout.connect(self.gui_update)
 
         self.human_proc = None
+        self.myo_proc = None
+        self.urdt_proc = None
+        self.gripper_proc = None
 
     
     def startRecordPlotWindow(self):
@@ -66,7 +69,6 @@ class MainWindow(QMainWindow):
         self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
         self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
         self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
-
 
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
 
@@ -91,8 +93,10 @@ class MainWindow(QMainWindow):
         # self.add_rosnode(node_name="myo-rawNode.py", pkg_name="ros_myo")
         # self.add_rosnode("world_to_myo.py", "arm_motion_controller_py3")
         # self.add_rosnode("rviz", "rviz", args="-d $(find arm_motion_controller_py3)/launch/config/config_with_myo.rviz")
-        # subprocess.run(["sh", "../sh/myo.sh"])
         self.human_proc = subprocess.Popen(["sh", "../sh/human.sh"]) ## this will halt the system. You will use Popen: https://stackoverflow.com/questions/16855642/execute-a-shell-script-from-python-subprocess
+        self.myo_proc = subprocess.Popen(["sh", "../sh/myo.sh"]) 
+
+        # TODO: human joint reset button
 
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
@@ -150,12 +154,11 @@ class MainWindow(QMainWindow):
         self.human_proc.kill()
         p_kill1 = subprocess.Popen(["rosnode", "kill", "-a"]) # not sure if I need a return object. Keep it for now
         p_kill2 = subprocess.Popen(["pkill", "-9", "ros"])
+        # TODO: kill Rviz manually
         self.rosTimer.stop()
         self.guiTimer.stop()
         # self.launch.shutdown()
-        
-        # p_node_kill = popen("rosnode kill /hrc_training_gui")
-        # p_kill = popen("killall -9 roscore") ## does not kill all roscore
+
 
     def gui_update(self):
         self.ros_node.update()
