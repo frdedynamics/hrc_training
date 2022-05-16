@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         self.RecordPlot.humanCalibrateButton.setEnabled(False)
         self.RecordPlot.humanJointResetButton.setEnabled(False)
         self.RecordPlot.emgResetButton.setEnabled(False)
-        self.RecordPlot.humanInitiateButton.setEnabled(False)
+        self.RecordPlot.humanInitiateButton.setEnabled(True)
         self.RecordPlot.gripperInitiateButton.setEnabled(False)
         self.RecordPlot.robotMoveButton.setEnabled(False)
 
@@ -132,15 +132,19 @@ class MainWindow(QMainWindow):
 
     def humanInitiate_clicked(self):
         self.add_rosnode("arm_motion_controller_py3", "wrist_to_robot_2arms.py", "wrist_to_robot_2arms")
-        self.RecordPlot.recordtextEdit.append("Move to initial arm poses in 4 seconds...")
-        sleep(1)
+        self.RecordPlot.recordtextEdit.append("-----CALIBRATION STARTED-----")
+        self.RecordPlot.recordtextEdit.append("Move to initial arm poses in 3 seconds...")
         self.RecordPlot.recordtextEdit.append("3 seconds...")
+        self.RecordPlot.recordtextEdit.repaint()
         sleep(1)
         self.RecordPlot.recordtextEdit.append("2 seconds...")
+        self.RecordPlot.recordtextEdit.repaint()
         sleep(1)
         self.RecordPlot.recordtextEdit.append("1 second...")
+        self.RecordPlot.recordtextEdit.repaint()
         sleep(1)
         self.RecordPlot.recordtextEdit.append("Initial arm poses registered")
+        self.RecordPlot.recordtextEdit.repaint()
 
         self.RecordPlot.gripperInitiateButton.setEnabled(True)
 
