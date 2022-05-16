@@ -163,7 +163,7 @@ class MainWindow(QMainWindow):
 
 
     def robotMove_clicked(self):
-        pass
+        self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
 
 
     def start_single_roslaunch(self, name):
