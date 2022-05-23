@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from builtins import AttributeError
 from pty import CHILD
 from socket import timeout
 from PyQt5.QtGui import *
@@ -179,7 +180,13 @@ class MainWindow(QMainWindow):
         self.RecordPlot.recordtextEdit.append(node_name+" in "+pkg_name+" is started")
 
     def stop_all_roslaunch(self):
-        self.human_proc.kill()
+        try:
+            self.human_proc.kill()
+            self.myo_proc.kill()
+            self.urdt_proc.kill()
+            self.gripper_proc.kill()
+        except AttributeError as e:
+            pass
         p_kill1 = subprocess.Popen(["rosnode", "kill", "-a"]) # not sure if I need a return object. Keep it for now
         p_kill2 = subprocess.Popen(["pkill", "-9", "ros"])
         # TODO: kill Rviz manually

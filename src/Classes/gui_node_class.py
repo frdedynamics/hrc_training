@@ -38,11 +38,11 @@ class GUInode:
         # self.pub_p_hand.publish(self.p_hand)
 
         # implement this from  DH_game for Rviz visualization
-        try:
-            result = self.score_client.call_server(self.task)
-            print('The result is:', result)
-        except rospy.ROSInterruptException:
-            print('Something went wrong:')
+        # try:
+        #     result = self.score_client.call_server(self.task)
+        #     print('The result is:', result)
+        # except rospy.ROSInterruptException:
+        #     print('Something went wrong:')
 
     def emg_sum_cb(self, msg):
         self.emg_sum = msg.data
