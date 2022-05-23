@@ -75,6 +75,7 @@ class MainWindow(QMainWindow):
         self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
 
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
+        self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
 
         self.show()
 
@@ -136,15 +137,19 @@ class MainWindow(QMainWindow):
         self.RecordPlot.recordtextEdit.append("-----CALIBRATION STARTED-----")
         self.RecordPlot.recordtextEdit.append("Move to initial arm poses in 3 seconds...")
         self.RecordPlot.recordtextEdit.append("3 seconds...")
+        self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
         self.RecordPlot.recordtextEdit.repaint()
         sleep(1)
         self.RecordPlot.recordtextEdit.append("2 seconds...")
+        self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
         self.RecordPlot.recordtextEdit.repaint()
         sleep(1)
         self.RecordPlot.recordtextEdit.append("1 second...")
+        self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
         self.RecordPlot.recordtextEdit.repaint()
         sleep(1)
         self.RecordPlot.recordtextEdit.append("Initial arm poses registered")
+        self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
         self.RecordPlot.recordtextEdit.repaint()
 
         self.RecordPlot.gripperInitiateButton.setEnabled(True)
@@ -158,7 +163,7 @@ class MainWindow(QMainWindow):
         # stdout = str(gripper_process.stdout.readlines())
         # print('STDOUT:{}'.format(stdout))
         # sys.exit()
-        self.gripper_proc1 = subprocess.Popen(["python3", "robotic_urcap_ctrl_py3.py", "172.31.1.144"]) # robot ip
+        self.gripper_proc = subprocess.Popen(["python3", "robotic_urcap_ctrl_py3.py", "172.31.1.144"]) # robot ip
         self.add_rosnode("ros_magic_pkg", "map_robotiq_to_topic_bool.py", "map_robotiq_to_topic_bool")
         self.RecordPlot.robotMoveButton.setEnabled(True)
 
