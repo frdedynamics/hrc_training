@@ -6,7 +6,7 @@ import numpy as np
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point
 from std_msgs.msg import String
-from geometry_msgs.msg import Pose, Quaternion
+from geometry_msgs.msg import Pose, Quaternion, Vector3
 import tf.transformations
 
 from Classes.MarkerBasics import MarkerBasics
@@ -30,18 +30,21 @@ def main():
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder")
 
     # right_bias = Quaternion([0, 0, 0.7, 0.7])
-    # left_bias = Quaternion([0, 0, 0.7, 0.7])
+    left_bias = Quaternion(0.707, 0.0, 0, 0.707)
     
     while not rospy.is_shutdown():
         try:
-            left_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/left_shoulder', rospy.Time())
+            left_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/left_shoulder_0', rospy.Time())
             right_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/right_shoulder', rospy.Time())
 
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rate.sleep()
             continue
 
-        left_arm_marker.marker_object.pose.position = left_shoulder_trans.transform.translation
+        # left_arm_marker.marker_object.pose.position = left_shoulder_trans.transform.translation
+        lm_np = kinematic.q_rotate(left_bias, left_shoulder_trans.transform.translation)
+        left_arm_marker.marker_object.pose.position = Vector3(lm_np[0], lm_np[1], lm_np[2])
+        print(left_arm_marker.marker_object.pose.position)
         left_arm_marker.marker_object.pose.orientation = left_shoulder_trans.transform.rotation
         # left_arm_marker.marker_object.pose.orientation = tf.transformations.quaternion_multiply( right_bias,[left_shoulder_trans.transform.rotation.x, left_shoulder_trans.transform.rotation.y, left_shoulder_trans.transform.rotation.z, left_shoulder_trans.transform.rotation.w])
         # print(left_shoulder_trans.transform.rotation.x)
