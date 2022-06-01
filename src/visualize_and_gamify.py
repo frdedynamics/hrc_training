@@ -17,7 +17,7 @@ imu_pkg_path = imu_pkg.get_path('imu_human_pkg')+"/src/Classes"
 sys.path.insert(0, imu_pkg_path)
 import Kinematics_with_Quaternions as kinematic
 
-ref = 'human/shoulder_center'
+ref = 'human/base'
 
 def main():
     rospy.init_node('rviz_markers', anonymous=True)
@@ -30,7 +30,7 @@ def main():
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder")
 
     # right_bias = Quaternion([0, 0, 0.7, 0.7])
-    left_bias = Quaternion(0.0, 0, 0, 1.0)
+    left_bias = Quaternion(0.0, 0.0, 0, 0.1)
     
     while not rospy.is_shutdown():
         try:
@@ -42,7 +42,7 @@ def main():
             continue
 
         left_arm_marker.marker_object.pose.position = left_shoulder_trans.transform.translation
-        # left_arm_marker.marker_object.pose.position.z += -0.2
+        # left_arm_marker.marker_object.pose.position.z += 0.35
         # left_arm_marker.marker_object.pose.orientation = left_shoulder_trans.transform.rotation
 
         left_arm_marker.marker_object.pose.orientation = kinematic.q_norm(kinematic.q_multiply(left_bias, left_shoulder_trans.transform.rotation))
