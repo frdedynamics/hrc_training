@@ -20,10 +20,16 @@ class GUInode:
         rospy.init_node("hrc_gui_training", anonymous=False)
         self.r = rospy.Rate(rate)
         self.emg_sum = Int64()
+        self.emg_sum_th = 3000
+        self.elbow_height_th = 0.2
         
 
     def init_subscribers_and_publishers(self):
         self.sub_emg_sum = rospy.Subscriber('/emg_sum', Int64, queue_size=1)
+
+    def set_params(self, emg_sum_th=3000, elbow_height_th=0.2):
+        self.emg_sum_th = rospy.set_param('/emg_sum_th', emg_sum_th)
+        self.elbow_height_th = rospy.set_param('/elbow_height_th', elbow_height_th)
 
     def data_logger_enabler(self):
         # TODO

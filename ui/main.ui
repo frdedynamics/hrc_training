@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QGroupBox" name="groupBox">
+  <widget class="QGroupBox" name="recordgroupBox">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -41,8 +41,8 @@
    <widget class="QPushButton" name="humanInitiateButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>350</y>
+      <x>200</x>
+      <y>360</y>
       <width>151</width>
       <height>41</height>
      </rect>
@@ -54,8 +54,8 @@
    <widget class="QPushButton" name="robotMoveButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>450</y>
+      <x>200</x>
+      <y>440</y>
       <width>151</width>
       <height>41</height>
      </rect>
@@ -67,8 +67,8 @@
    <widget class="QPushButton" name="awindaButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>180</y>
+      <x>240</x>
+      <y>40</y>
       <width>151</width>
       <height>41</height>
      </rect>
@@ -88,19 +88,6 @@
     </property>
     <property name="text">
      <string>roscore</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="humanCalibrateButton">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>240</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Human Calibrate</string>
     </property>
    </widget>
    <widget class="QPushButton" name="newUserButton">
@@ -136,101 +123,10 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="roscorelineEdit">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>50</y>
-      <width>181</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="awndalineEdit">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>190</y>
-      <width>181</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="humanCalibratelineEdit">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>240</y>
-      <width>181</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="humanInitiatelineEdit">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>360</y>
-      <width>181</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="emgLabel">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>320</y>
-      <width>41</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>EMG:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="emglineEdit">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>290</y>
-      <width>181</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="emgResetButton">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>320</y>
-      <width>89</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Ubuntu Mono</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>EMG Reset</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="robotInitiatelineEdit">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>460</y>
-      <width>181</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QDialogButtonBox" name="buttonBox">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>200</x>
       <y>690</y>
       <width>166</width>
       <height>25</height>
@@ -243,7 +139,7 @@
    <widget class="QPushButton" name="gripperInitiateButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>200</x>
       <y>400</y>
       <width>151</width>
       <height>41</height>
@@ -251,16 +147,6 @@
     </property>
     <property name="text">
      <string>Gripper Initiate</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="gripperInitiatelineEdit">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>410</y>
-      <width>181</width>
-      <height>25</height>
-     </rect>
     </property>
    </widget>
    <widget class="QRadioButton" name="mode1radioButton">
@@ -289,31 +175,13 @@
      <string>Mode-2</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="humanJointResetButton">
+   <widget class="QFrame" name="emg_frame">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>290</y>
-      <width>151</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Ubuntu Mono</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Human Joint Reset</string>
-    </property>
-   </widget>
-   <widget class="QFrame" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>270</y>
-      <width>201</width>
-      <height>81</height>
+      <x>290</x>
+      <y>190</y>
+      <width>211</width>
+      <height>161</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -322,14 +190,78 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
+    <widget class="QPushButton" name="emgResetButton">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>130</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu Mono</family>
+      </font>
+     </property>
+     <property name="text">
+      <string>EMG Reset</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="emgCurrentLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>EMG current:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="emgTresholdLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>EMG treshold:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="emgTresholdLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>30</y>
+       <width>81</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="emgCurrentLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>80</y>
+       <width>81</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
-   <widget class="QFrame" name="frame_2">
+   <widget class="QFrame" name="joint_frame">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>230</y>
-      <width>171</width>
-      <height>91</height>
+      <y>190</y>
+      <width>221</width>
+      <height>161</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -338,9 +270,63 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
+    <widget class="QLineEdit" name="elbowTresholdLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>30</y>
+       <width>81</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="elbowTresholdLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>111</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Elbow treshold:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="humanCalibrateButton">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>80</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Human Calibrate</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="humanJointResetButton">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>130</y>
+       <width>151</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu Mono</family>
+      </font>
+     </property>
+     <property name="text">
+      <string>Human Joint Reset</string>
+     </property>
+    </widget>
    </widget>
-   <zorder>frame</zorder>
-   <zorder>frame_2</zorder>
+   <zorder>emg_frame</zorder>
+   <zorder>joint_frame</zorder>
    <zorder>loggingcheckBox</zorder>
    <zorder>humanInitiateButton</zorder>
    <zorder>robotMoveButton</zorder>
@@ -349,21 +335,10 @@
    <zorder>newUserButton</zorder>
    <zorder>userRecordComboBox</zorder>
    <zorder>recordtextEdit</zorder>
-   <zorder>roscorelineEdit</zorder>
-   <zorder>awndalineEdit</zorder>
-   <zorder>humanCalibratelineEdit</zorder>
-   <zorder>humanInitiatelineEdit</zorder>
-   <zorder>emgLabel</zorder>
-   <zorder>emglineEdit</zorder>
-   <zorder>robotInitiatelineEdit</zorder>
    <zorder>buttonBox</zorder>
    <zorder>gripperInitiateButton</zorder>
-   <zorder>gripperInitiatelineEdit</zorder>
    <zorder>mode1radioButton</zorder>
    <zorder>mode2radioButton</zorder>
-   <zorder>humanCalibrateButton</zorder>
-   <zorder>humanJointResetButton</zorder>
-   <zorder>emgResetButton</zorder>
   </widget>
   <widget class="QGroupBox" name="plotgroupBox">
    <property name="geometry">

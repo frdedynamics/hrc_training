@@ -102,8 +102,6 @@ class MainWindow(QMainWindow):
         sleep(1.0)
         self.myo_proc = subprocess.Popen(["sh", "../sh/myo.sh"]) 
 
-        # TODO: human joint reset button
-
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
         self.RecordPlot.humanJointResetButton.setEnabled(True)
@@ -117,8 +115,6 @@ class MainWindow(QMainWindow):
         self.add_rosnode("arm_motion_controller_py3", "imu_subscriber_node.py", "imu_subscriber_node")
         self.RecordPlot.recordtextEdit.append("Human joint reset DONE")
         self.RecordPlot.humanJointResetButton.setEnabled(True)
-        # TODO: check if EMG sum is changing over time
-
 
     def emgReset_clicked(self):
         self.RecordPlot.emgResetButton.setEnabled(False)
@@ -152,7 +148,15 @@ class MainWindow(QMainWindow):
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
         self.RecordPlot.recordtextEdit.repaint()
 
-        self.RecordPlot.gripperInitiateButton.setEnabled(True)
+        # TODO: set elbow_height_th, emg_sum, hand_dominance parameters
+        if (len(self.RecordPlot.elbowTresholdLineEdit.text())>0 and self.RecordPlot.emgTresholdLabel.text()>0):
+            elbow_th = int(self.RecordPlot.elbowTresholdLineEdit.text())
+            emg_th = int(self.RecordPlot.emgTresholdLabel.text())
+            self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th)
+
+            self.RecordPlot.gripperInitiateButton.setEnabled(True)
+        else:
+            print("Elbow and EMG calibrations are not completed")
 
 
     def gripperInitiate_clicked(self):
