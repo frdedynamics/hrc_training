@@ -23,9 +23,9 @@ class MarkerBasics(object):
         self.marker_object.type = Marker.ARROW
         self.marker_object.action = Marker.ADD
         self.marker_object.scale.x = 0.4
-        self.marker_object.scale.y = 0.05
+        self.marker_object.scale.y = 0.1
         # self.marker_object.scale.z = 0.294151609476
-        self.marker_object.scale.z = 0.05
+        self.marker_object.scale.z = 0.1
 
         self.marker_object.color.r = 0
         self.marker_object.color.g = 255

@@ -30,7 +30,7 @@ def main():
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder")
 
     # right_bias = Quaternion([0, 0, 0.7, 0.7])
-    left_bias = Quaternion(0.0, 0.0, 0, 0.1)
+    left_marker_orientation = Quaternion(0.0, 0.0, 0, 0.1)
     
     while not rospy.is_shutdown():
         try:
@@ -43,9 +43,9 @@ def main():
 
         left_arm_marker.marker_object.pose.position = left_shoulder_trans.transform.translation
         # left_arm_marker.marker_object.pose.position.z += 0.35
-        # left_arm_marker.marker_object.pose.orientation = left_shoulder_trans.transform.rotation
+        left_arm_marker.marker_object.pose.orientation = left_shoulder_trans.transform.rotation
 
-        left_arm_marker.marker_object.pose.orientation = kinematic.q_norm(kinematic.q_multiply(left_bias, left_shoulder_trans.transform.rotation))
+        # left_arm_marker.marker_object.pose.orientation = kinematic.q_norm(kinematic.q_multiply(left_bias, left_shoulder_trans.transform.rotation))
 
 
         # left_arm_marker.marker_object.pose.orientation = tf.transformations.quaternion_multiply( right_bias,[left_shoulder_trans.transform.rotation.x, left_shoulder_trans.transform.rotation.y, left_shoulder_trans.transform.rotation.z, left_shoulder_trans.transform.rotation.w])
