@@ -19,6 +19,18 @@ import Kinematics_with_Quaternions as kinematic
 
 ref = 'human/base'
 
+elbow_left_height = Pose()
+elbow_right_height = Pose()
+
+def cb_elbow_left(msg):
+    global elbow_left_height
+    elbow_left_height = msg.position.y
+
+    
+def cb_elbow_right(msg):
+    global elbow_right_height
+    elbow_right_height = -msg.position.y
+
 def main():
     rospy.init_node('rviz_markers', anonymous=True)
     rate = rospy.Rate(100)
@@ -26,11 +38,22 @@ def main():
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
 
+    sub_elbow_left = rospy.Subscriber('/elbow_left', Pose, cb_elbow_left)
+    sub_elbow_right= rospy.Subscriber('/elbow_right', Pose, cb_elbow_right)
+
     left_arm_marker = MarkerBasics(topic_id="human/left_shoulder")
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder")
 
     # right_bias = Quaternion([0, 0, 0.7, 0.7])
     left_marker_orientation = Quaternion(0.0, 0.0, 0, 0.1)
+
+    try:
+        elbow_height_th = rospy.get_param("/elbow_height_th")
+        print("Elbow param set: ", elbow_height_th)
+    except KeyError as e:
+        elbow_height_th = 0.2
+        print("Elbow parameter is not set by GUI.")
+        print(e)
     
     while not rospy.is_shutdown():
         try:
@@ -42,20 +65,21 @@ def main():
             continue
 
         left_arm_marker.marker_object.pose.position = left_shoulder_trans.transform.translation
-        # left_arm_marker.marker_object.pose.position.z += 0.35
         left_arm_marker.marker_object.pose.orientation = left_shoulder_trans.transform.rotation
 
-        # left_arm_marker.marker_object.pose.orientation = kinematic.q_norm(kinematic.q_multiply(left_bias, left_shoulder_trans.transform.rotation))
-
-
-        # left_arm_marker.marker_object.pose.orientation = tf.transformations.quaternion_multiply( right_bias,[left_shoulder_trans.transform.rotation.x, left_shoulder_trans.transform.rotation.y, left_shoulder_trans.transform.rotation.z, left_shoulder_trans.transform.rotation.w])
-        # print(left_shoulder_trans.transform.rotation.x)
-        # print(left_arm_marker.marker_object.pose.orientation.x)
-        # print(type(left_shoulder_trans.transform.rotation))
-        # left_arm_marker.marker_object.pose.orientation = kinematic.kinematic.q_multiply(left_shoulder_trans.transform.rotation, left_bias)
-        # print(left_arm_marker.marker_object.pose.orientation)
         right_arm_marker.marker_object.pose.position = right_shoulder_trans.transform.translation
         right_arm_marker.marker_object.pose.orientation = right_shoulder_trans.transform.rotation
+
+        if elbow_left_height >= elbow_height_th:
+            left_arm_marker.set_visible()
+        else:
+            left_arm_marker.set_invisible()
+
+        if elbow_right_height >= elbow_height_th:
+            right_arm_marker.set_visible()
+        else:
+            right_arm_marker.set_invisible()
+
 
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
         right_arm_marker.marker_objectlisher.publish(right_arm_marker.marker_object)

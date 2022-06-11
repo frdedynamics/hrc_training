@@ -24,7 +24,6 @@ class MarkerBasics(object):
         self.marker_object.action = Marker.ADD
         self.marker_object.scale.x = 0.4
         self.marker_object.scale.y = 0.1
-        # self.marker_object.scale.z = 0.294151609476
         self.marker_object.scale.z = 0.1
 
         self.marker_object.color.r = 0
@@ -75,6 +74,14 @@ class MarkerBasics(object):
         my_point.z = z
         self.marker_object.pose.position = my_point
         #rospy.loginfo("PositionMarker-X="+str(self.marker_object.pose.position.x))
+
+
+    def set_visible(self):
+        self.marker_object.color.a = 1.0
+
+
+    def set_invisible(self):
+        self.marker_object.color.a = 0.0
 
 
     def change_colour(self, R, G, B):
