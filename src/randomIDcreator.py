@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 
-import sys, csv
+import csv, random
+from operator import ne
 data_path = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
 
 def create_and_check_ID(id_list):
-    print(id_list)
+    id = random.randint(10000, 99999)
+
+    if not (id in id_list):
+        return id
+    else:
+        create_and_check_ID(id_list)
     
 
 def get_ID_list(filename):
@@ -31,4 +37,5 @@ def main():
     pass
 
 if __name__ == '__main__':
-    create_and_check_ID(get_ID_list(data_path+'id_list.csv'))
+    new_id = create_and_check_ID(get_ID_list(data_path+'id_list.csv'))
+    print("New ID created: ", new_id)
