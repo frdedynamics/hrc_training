@@ -23,7 +23,7 @@ import Classes.randomIDcreator as randomIDcreator
 import roslaunch
 import subprocess, time
 from pathlib import Path
-from os import popen, chdir
+from os import popen, chdir, mkdir
 
 PKG_PATH = Path(QDir.currentPath()).parents[0]
 DATA_PATH = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
@@ -44,7 +44,13 @@ class NewUser(QDialog, NewUserDialog):
     def create_random_ID(self, name, height, arm_length, left_handed):
         self.userID = randomIDcreator.main(name, height, arm_length, left_handed)
         self.IDlabel.setText(str(self.userID))
-        
+
+    def create_user_folder(self):
+        new_folder = DATA_PATH+str(self.userID)
+        mkdir(new_folder)
+        print("New user is ready with ID number: ", self.userID)
+        self.close
+
 
 class MainWindow(QMainWindow, Form_0):
     def __init__(self, parent=None):
@@ -79,9 +85,10 @@ class MainWindow(QMainWindow, Form_0):
                                                                 self.NewUserTool.heightLineEdit.text(),
                                                                 self.NewUserTool.armLengthLineEdit.text(),
                                                                 self.NewUserTool.leftHandcheckBox.isChecked()))
-        # a = randomIDcreator()
-        # self.NewUserTool.IDlabel.setText(a)
 
+        self.NewUserTool.buttonBox.accepted.connect(self.NewUserTool.create_user_folder)
+        self.NewUserTool.buttonBox.rejected.connect(self.Dialog.close)
+                                                            
         self.Dialog.show()
         self.Dialog.exec_()
 
