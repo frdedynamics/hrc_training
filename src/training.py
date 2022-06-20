@@ -11,7 +11,7 @@ import pandas as pd
 from math import pi
 
 import sys
-# import re # for split string with multiple delimiters
+import re # for split string with multiple delimiters
 from time import sleep
 from os import chdir
 
@@ -99,12 +99,19 @@ class MainWindow(QMainWindow, Form_0):
 
     def select_user(self):
         chdir(DATA_PATH+"users/")
-        proc = subprocess.Popen(["ls", "-l"], shell=True, stdout=subprocess.PIPE)
-        print(str(proc.stdout.read()).split('\\n')[1:-1])
-        # self.RecordPlot.user_list = str(proc.stdout.read())
-        # self.RecordPlot.userComboBox.addItems([''])
-        # for i in range(len(self.RecordPlot.user_list)-1):
-        #     self.RecordPlot.userComboBox.addItems([self.RecordPlot.user_list[i]])
+        proc = subprocess.Popen(['ls','-l'], stdout=subprocess.PIPE)
+        self.RecordPlot.users_list = []
+        self.RecordPlot.userComboBox.addItems([''])
+        for user in str(proc.stdout.read()).split('\\n')[1:-1]:
+            user_folder_info = re.split(r"\s+", user)[-4:] # ['juni', '20', '23:26', '0']
+            user_info = str(user_folder_info[3]+" - "+user_folder_info[1]+user_folder_info[0]+user_folder_info[2])
+            self.RecordPlot.users_list.append(user_folder_info)
+            self.RecordPlot.userComboBox.addItem(user_info)
+        print(self.RecordPlot.users_list)
+            
+        
+        # for i in range(len(self.RecordPlot.users_list)-1): # this for is unnecessary. Merge the two for loops
+        #     self.RecordPlot.userComboBox.addItems([self.RecordPlot.users_list[i]])
 
 
     def startRecordPlotWindow(self):
@@ -135,6 +142,7 @@ class MainWindow(QMainWindow, Form_0):
 
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
+
 
         self.show()
 
