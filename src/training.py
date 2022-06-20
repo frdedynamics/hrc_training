@@ -107,11 +107,15 @@ class MainWindow(QMainWindow, Form_0):
             user_info = str(user_folder_info[3]+" - "+user_folder_info[1]+user_folder_info[0]+user_folder_info[2])
             self.RecordPlot.users_list.append(user_folder_info)
             self.RecordPlot.userComboBox.addItem(user_info)
-        print(self.RecordPlot.users_list)
-            
-        
-        # for i in range(len(self.RecordPlot.users_list)-1): # this for is unnecessary. Merge the two for loops
-        #     self.RecordPlot.userComboBox.addItems([self.RecordPlot.users_list[i]])
+
+        # Searchable combobox
+        self.RecordPlot.userComboBox.setEditable(True)
+        self.RecordPlot.userComboBox.completer().setCompletionMode(QCompleter.PopupCompletion) 
+        self.RecordPlot.userComboBox.setInsertPolicy(QComboBox.NoInsert) 
+
+        print(self.RecordPlot.userComboBox.currentText())
+        # self.RecordPlot.userComboBox.editTextChanged.connect(self.user_combo_changed)
+        # self.RecordPlot.userComboBox.currentTextChanged.connect(self.user_combo_changed)
 
 
     def startRecordPlotWindow(self):
