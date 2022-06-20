@@ -11,6 +11,7 @@ import pandas as pd
 from math import pi
 
 import sys
+# import re # for split string with multiple delimiters
 from time import sleep
 from os import chdir
 
@@ -46,10 +47,10 @@ class NewUser(QDialog, NewUserDialog):
         self.IDlabel.setText(str(self.userID))
 
     def create_user_folder(self):
-        new_folder = DATA_PATH+str(self.userID)
+        new_folder = DATA_PATH+"users/"+str(self.userID)
         mkdir(new_folder)
         print("New user is ready with ID number: ", self.userID)
-    
+
     def cancel_new_user(self):
         # self.close
         pass
@@ -91,11 +92,21 @@ class MainWindow(QMainWindow, Form_0):
 
         self.NewUserTool.buttonBox.accepted.connect(self.NewUserTool.create_user_folder)
         self.NewUserTool.buttonBox.rejected.connect(self.Dialog.close)
-                                                            
+
         self.Dialog.show()
         self.Dialog.exec_()
 
-    
+
+    def select_user(self):
+        chdir(DATA_PATH+"users/")
+        proc = subprocess.Popen(["ls", "-l"], shell=True, stdout=subprocess.PIPE)
+        print(str(proc.stdout.read()).split('\\n')[1:-1])
+        # self.RecordPlot.user_list = str(proc.stdout.read())
+        # self.RecordPlot.userComboBox.addItems([''])
+        # for i in range(len(self.RecordPlot.user_list)-1):
+        #     self.RecordPlot.userComboBox.addItems([self.RecordPlot.user_list[i]])
+
+
     def startRecordPlotWindow(self):
         self.RecordPlot = RecordPlotWindow(self)
         self.setCentralWidget(self.RecordPlot)
@@ -120,6 +131,7 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.buttonBox.clicked.connect(self.stop_all_roslaunch)
 
         self.RecordPlot.newUserButton.clicked.connect(self.open_new_user_dialog)
+        self.RecordPlot.selectUserButton.clicked.connect(self.select_user)
 
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
@@ -132,14 +144,14 @@ class MainWindow(QMainWindow, Form_0):
         self.guiTimer.start(500)
         self.ros_node.init_subscribers_and_publishers()
         self.start_single_roslaunch('/launch/gui.launch') # I need this to set a UUID for later added nodes
-        
+
         self.RecordPlot.awindaButton.setEnabled(True)
 
 
     def awinda_clicked(self):
         self.add_rosnode("awindamonitor", "awindamonitor", "awindamonitor")
         self.RecordPlot.humanCalibrateButton.setEnabled(True)
-        
+
 
     def humanCalibrate_clicked(self):
         # self.add_rosnode(node_name="myo-rawNode.py", pkg_name="ros_myo")
@@ -147,13 +159,13 @@ class MainWindow(QMainWindow, Form_0):
         # self.add_rosnode("rviz", "rviz", args="-d $(find arm_motion_controller_py3)/launch/config/config_with_myo.rviz")
         self.human_proc = subprocess.Popen(["sh", "../sh/human.sh"]) ## this will halt the system. You will use Popen: https://stackoverflow.com/questions/16855642/execute-a-shell-script-from-python-subprocess
         sleep(1.0)
-        self.myo_proc = subprocess.Popen(["sh", "../sh/myo.sh"]) 
+        self.myo_proc = subprocess.Popen(["sh", "../sh/myo.sh"])
 
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
         self.RecordPlot.humanJointResetButton.setEnabled(True)
 
-    
+
     def humanJointReset_clicked(self):
         self.RecordPlot.humanJointResetButton.setEnabled(False)
         self.RecordPlot.recordtextEdit.append("Human joints are resetting")
@@ -173,7 +185,7 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.emgResetButton.setEnabled(True)
         # TODO: check if EMG sum is changing over time
 
-        
+
 
     def humanInitiate_clicked(self):
         self.add_rosnode("arm_motion_controller_py3", "wrist_to_robot_2arms.py", "wrist_to_robot_2arms")
@@ -254,7 +266,7 @@ class MainWindow(QMainWindow, Form_0):
     def gui_update(self):
         self.ros_node.update()
         self.ros_node.r.sleep()
-        
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
