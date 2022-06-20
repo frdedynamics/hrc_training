@@ -2,34 +2,18 @@
 
 import rospy
 import tf2_ros
-import numpy as np
-from visualization_msgs.msg import Marker
-from geometry_msgs.msg import Point
 from std_msgs.msg import String
-from geometry_msgs.msg import Pose, Quaternion, Vector3
-import tf.transformations
-
+from geometry_msgs.msg import Pose, Quaternion
 from Classes.MarkerBasics import MarkerBasics
-import rospkg, sys
-imu_pkg = rospkg.RosPack()
-imu_pkg_path = imu_pkg.get_path('imu_human_pkg')+"/src/Classes"
-# print(imu_pkg_path)
-sys.path.insert(0, imu_pkg_path)
-import Kinematics_with_Quaternions as kinematic
 
 ref = 'human/base'
 
-elbow_left_height = Pose()
-elbow_right_height = Pose()
+force_mode = String()
 
-def cb_elbow_left(msg):
-    global elbow_left_height
-    elbow_left_height = msg.position.y
+def cb_force_mode(msg):
+    global force_mode
+    force_mode = msg.data
 
-    
-def cb_elbow_right(msg):
-    global elbow_right_height
-    elbow_right_height = -msg.position.y
 
 def main():
     rospy.init_node('rviz_markers', anonymous=True)
@@ -38,23 +22,12 @@ def main():
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
 
-    sub_elbow_left = rospy.Subscriber('/elbow_left', Pose, cb_elbow_left)
-    sub_elbow_right= rospy.Subscriber('/elbow_right', Pose, cb_elbow_right)
+    sub_elbow_left = rospy.Subscriber('/force_mode', String, cb_force_mode)
 
     left_arm_marker = MarkerBasics(topic_id="human/left_shoulder")
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder")
 
-    # right_bias = Quaternion([0, 0, 0.7, 0.7])
-    left_marker_orientation = Quaternion(0.0, 0.0, 0, 0.1)
 
-    try:
-        elbow_height_th = rospy.get_param("/elbow_height_th")
-        print("Elbow param set: ", elbow_height_th)
-    except KeyError as e:
-        elbow_height_th = 0.2
-        print("Elbow parameter is not set by GUI.")
-        print(e)
-    
     while not rospy.is_shutdown():
         try:
             left_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/left_shoulder_0', rospy.Time())
@@ -70,12 +43,21 @@ def main():
         right_arm_marker.marker_object.pose.position = right_shoulder_trans.transform.translation
         right_arm_marker.marker_object.pose.orientation = right_shoulder_trans.transform.rotation
 
-        if elbow_left_height >= elbow_height_th:
+        if force_mode.data == 'up':
             left_arm_marker.set_visible()
-        else:
+            right_arm_marker.set_visible()
+        elif force_mode.data == 'down':
             left_arm_marker.set_invisible()
-
-        if elbow_right_height >= elbow_height_th:
+            right_arm_marker.set_invisible()
+        elif force_mode.data == 'left':
+            left_arm_marker.set_visible()
+            right_arm_marker.set_invisible()
+        elif force_mode.data == 'right':
+            left_arm_marker.set_invisible()
+            right_arm_marker.set_visible()
+        if force_mode.data == 'down':
+            # TODO: Also change color to red maybe?
+            left_arm_marker.set_visible()
             right_arm_marker.set_visible()
         else:
             right_arm_marker.set_invisible()
