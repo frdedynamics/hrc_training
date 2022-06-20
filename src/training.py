@@ -49,7 +49,10 @@ class NewUser(QDialog, NewUserDialog):
         new_folder = DATA_PATH+str(self.userID)
         mkdir(new_folder)
         print("New user is ready with ID number: ", self.userID)
-        self.close
+    
+    def cancel_new_user(self):
+        # self.close
+        pass
 
 
 class MainWindow(QMainWindow, Form_0):
