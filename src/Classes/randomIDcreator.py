@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 
+"""
+Creates a new 5-digit ID for new users. 
+It checks the previous IDs and finds a unique one
+Adds the new user into the CSV file
+"""
+
 import csv, random
 data_path = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
+id_filename = data_path+'id_list.csv'
+
 
 def create_and_check_ID(id_list):
     id = random.randint(10000, 99999)
@@ -32,11 +40,19 @@ def get_ID_list(filename):
     # print(id_list)
 
 
+def add_new_user(filename, id, name, height, arm_length):
+    with open(filename, 'a+', newline='') as csvfile:
+        writer_object = csv.writer(csvfile)
+        writer_object.writerow([id, name, height, arm_length])
+        csvfile.close()       
+
+
+
 def main():
-    a = 5
-    return str(a)
+    new_id = create_and_check_ID(get_ID_list(id_filename))
+    add_new_user(id_filename, str(new_id), "asd", "asd", "asd")
+    print("New ID created: ", new_id)
+    return new_id
 
 if __name__ == '__main__':
-    # new_id = create_and_check_ID(get_ID_list(data_path+'id_list.csv'))
-    # print("New ID created: ", new_id)
     main()
