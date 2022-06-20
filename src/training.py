@@ -33,9 +33,9 @@ class RecordPlotWindow(QWidget, Form_0):
         self.setupUi(self)
 
 
-class NewUSer(QDialog, NewUserDialog):
+class NewUser(QDialog, NewUserDialog):
     def __init__(self, parent=None):
-        super(NewUserDialog, self).__init__(parent)
+        super(NewUser, self).__init__(parent)
         self.setupUi(self)
         self.userID = 0
         
@@ -61,8 +61,14 @@ class MainWindow(QMainWindow, Form_0):
 
         self.user_path = DATA_PATH
 
+
     def open_new_user_dialog(self):
-        pass
+        self.Dialog = QDialog()
+        self.NewUserTool = NewUser(self)
+        self.NewUserTool.setupUi(self.Dialog)
+
+        self.Dialog.show()
+        self.Dialog.exec_()
 
     
     def startRecordPlotWindow(self):
@@ -86,7 +92,9 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.humanInitiateButton.clicked.connect(self.humanInitiate_clicked)
         self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
         self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
-        self.RecordPlot.buttonBox.rejected.connect(self.stop_all_roslaunch)
+        self.RecordPlot.buttonBox.clicked.connect(self.stop_all_roslaunch)
+
+        self.RecordPlot.newUserButton.clicked.connect(self.open_new_user_dialog)
 
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
