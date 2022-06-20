@@ -33,8 +33,10 @@ def get_ID_list(filename):
 
 
 def main():
-    pass
+    a = 5
+    return str(a)
 
 if __name__ == '__main__':
-    new_id = create_and_check_ID(get_ID_list(data_path+'id_list.csv'))
-    print("New ID created: ", new_id)
+    # new_id = create_and_check_ID(get_ID_list(data_path+'id_list.csv'))
+    # print("New ID created: ", new_id)
+    main()

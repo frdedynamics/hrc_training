@@ -18,6 +18,8 @@ from Classes.main import Ui_Form as Form_0
 from Classes.gui_node_class import GUInode
 from Classes.new_user import Ui_Dialog as NewUserDialog
 
+import Classes.randomIDcreator as randomIDcreator
+
 import roslaunch
 import subprocess, time
 from pathlib import Path
@@ -38,6 +40,10 @@ class NewUser(QDialog, NewUserDialog):
         super(NewUser, self).__init__(parent)
         self.setupUi(self)
         self.userID = 0
+
+    def create_random_ID(self):
+        a = randomIDcreator.main()
+        print(a)
         
 
 class MainWindow(QMainWindow, Form_0):
@@ -66,6 +72,11 @@ class MainWindow(QMainWindow, Form_0):
         self.Dialog = QDialog()
         self.NewUserTool = NewUser(self)
         self.NewUserTool.setupUi(self.Dialog)
+
+        # call randomIDcreator script here
+        self.NewUserTool.createButton.clicked.connect(self.NewUserTool.create_random_ID)
+        # a = randomIDcreator()
+        # self.NewUserTool.IDlabel.setText(a)
 
         self.Dialog.show()
         self.Dialog.exec_()
