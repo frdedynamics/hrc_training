@@ -41,24 +41,25 @@ def get_ID_list(filename):
     # print(id_list)
 
 
-def add_new_user(filename, id, name, height, arm_length):
+def add_new_user(filename, id, name, height, arm_length, left_handed):
     with open(filename, 'a+', newline='') as csvfile:
         writer_object = csv.writer(csvfile)
-        writer_object.writerow([id, name, height, arm_length])
+        writer_object.writerow([id, name, height, arm_length, left_handed])
         csvfile.close()       
 
 
 
-def main(name, height, arm_length):
+def main(name, height, arm_length, left_handed=False):
     new_id = create_and_check_ID(get_ID_list(id_filename))
     # add_new_user(id_filename, str(new_id), "asd", "asd", "asd")
-    add_new_user(id_filename, str(new_id), name, height, arm_length)
+    add_new_user(id_filename, str(new_id), name, height, arm_length, left_handed)
     print("New ID created: ", new_id)
     return new_id
 
 if __name__ == '__main__':
-    if not len(argv) == 4:
-        exit("Required 4 args: ./randomIDcreator.py name height arm_length")
+    if not len(argv) == 5:
+        exit("Required 5 args: ./randomIDcreator.py name height arm_length left_handed=False")
+        # TODO: optional left handed add.
     else:
-        main(argv[1], argv[2], argv[3])
+        main(argv[1], argv[2], argv[3], argv[4])
     

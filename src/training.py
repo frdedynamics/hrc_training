@@ -41,8 +41,8 @@ class NewUser(QDialog, NewUserDialog):
         self.setupUi(self)
         self.userID = 0
 
-    def create_random_ID(self, name, height, arm_length):
-        self.userID = randomIDcreator.main(name, height, arm_length)
+    def create_random_ID(self, name, height, arm_length, left_handed):
+        self.userID = randomIDcreator.main(name, height, arm_length, left_handed)
         self.IDlabel.setText(str(self.userID))
         
 
@@ -77,7 +77,8 @@ class MainWindow(QMainWindow, Form_0):
         self.NewUserTool.createButton.clicked.connect(lambda: self.NewUserTool.create_random_ID(
                                                                 self.NewUserTool.nameLineEdit.text(),
                                                                 self.NewUserTool.heightLineEdit.text(),
-                                                                self.NewUserTool.armLengthLineEdit.text()))
+                                                                self.NewUserTool.armLengthLineEdit.text(),
+                                                                self.NewUserTool.leftHandcheckBox.isChecked()))
         # a = randomIDcreator()
         # self.NewUserTool.IDlabel.setText(a)
 
