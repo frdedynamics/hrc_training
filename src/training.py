@@ -16,6 +16,7 @@ from os import chdir
 
 from Classes.main import Ui_Form as Form_0
 from Classes.gui_node_class import GUInode
+from Classes.new_user import Ui_Dialog as NewUserDialog
 
 import roslaunch
 import subprocess, time
@@ -23,15 +24,23 @@ from pathlib import Path
 from os import popen, chdir
 
 PKG_PATH = Path(QDir.currentPath()).parents[0]
+DATA_PATH = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
 
 
 class RecordPlotWindow(QWidget, Form_0):
     def __init__(self, parent=None):
         super(RecordPlotWindow, self).__init__(parent)
         self.setupUi(self)
+
+
+class NewUSer(QDialog, NewUserDialog):
+    def __init__(self, parent=None):
+        super(NewUserDialog, self).__init__(parent)
+        self.setupUi(self)
+        self.userID = 0
         
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, Form_0):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.resize(1000, 767)
@@ -49,6 +58,11 @@ class MainWindow(QMainWindow):
         self.myo_proc = None
         self.urdt_proc = None
         self.gripper_proc = None
+
+        self.user_path = DATA_PATH
+
+    def open_new_user_dialog(self):
+        pass
 
     
     def startRecordPlotWindow(self):
