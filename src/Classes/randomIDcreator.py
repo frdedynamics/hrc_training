@@ -6,6 +6,7 @@ It checks the previous IDs and finds a unique one
 Adds the new user into the CSV file
 """
 
+from sys import argv, exit
 import csv, random
 data_path = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
 id_filename = data_path+'id_list.csv'
@@ -48,11 +49,16 @@ def add_new_user(filename, id, name, height, arm_length):
 
 
 
-def main():
+def main(name, height, arm_length):
     new_id = create_and_check_ID(get_ID_list(id_filename))
-    add_new_user(id_filename, str(new_id), "asd", "asd", "asd")
+    # add_new_user(id_filename, str(new_id), "asd", "asd", "asd")
+    add_new_user(id_filename, str(new_id), name, height, arm_length)
     print("New ID created: ", new_id)
     return new_id
 
 if __name__ == '__main__':
-    main()
+    if not len(argv) == 4:
+        exit("Required 4 args: ./randomIDcreator.py name height arm_length")
+    else:
+        main(argv[1], argv[2], argv[3])
+    
