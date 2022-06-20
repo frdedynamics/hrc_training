@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import csv, random
-from operator import ne
 data_path = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
 
 def create_and_check_ID(id_list):
