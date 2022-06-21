@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from builtins import AttributeError
-from pty import CHILD
-from socket import timeout
+
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -55,6 +53,9 @@ class NewUser(QDialog, NewUserDialog):
         # self.close
         pass
 
+    def custom_closeEvent(self, event):
+        print("X is clicked")
+
 
 class MainWindow(QMainWindow, Form_0):
     def __init__(self, parent=None):
@@ -92,6 +93,7 @@ class MainWindow(QMainWindow, Form_0):
 
         self.NewUserTool.buttonBox.accepted.connect(self.NewUserTool.create_user_folder)
         self.NewUserTool.buttonBox.rejected.connect(self.Dialog.close)
+        self.Dialog.closeEvent = self.NewUserTool.custom_closeEvent
 
         self.Dialog.show()
         self.Dialog.exec_()
