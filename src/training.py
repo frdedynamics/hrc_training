@@ -113,9 +113,17 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.userComboBox.completer().setCompletionMode(QCompleter.PopupCompletion) 
         self.RecordPlot.userComboBox.setInsertPolicy(QComboBox.NoInsert) 
 
-        print(self.RecordPlot.userComboBox.currentText())
-        # self.RecordPlot.userComboBox.editTextChanged.connect(self.user_combo_changed)
-        # self.RecordPlot.userComboBox.currentTextChanged.connect(self.user_combo_changed)
+        # print(self.RecordPlot.userComboBox.currentText())
+        self.RecordPlot.userComboBox.currentTextChanged.connect(self.user_combo_changed)
+    
+    def user_combo_changed(self):
+        self.RecordPlot.selectedID = self.RecordPlot.userComboBox.currentText().replace('-', ' ').split()[0]
+        chdir(DATA_PATH+"users/"+self.RecordPlot.selectedID)
+        proc = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
+        trial_no = str(proc.stdout.read())[2:-1].split('\\n')
+        # trial_no = re.split('(?:\sb\'|\\n)\s',str(proc.stdout.read()))
+        print(trial_no)
+        print(len(trial_no))
 
 
     def startRecordPlotWindow(self):
