@@ -24,8 +24,9 @@ def main():
 
     sub_elbow_left = rospy.Subscriber('/force_mode', String, cb_force_mode)
 
-    left_arm_marker = MarkerBasics(topic_id="human/left_shoulder")
-    right_arm_marker = MarkerBasics(topic_id="human/right_shoulder")
+    left_arm_marker = MarkerBasics(topic_id="human/left_shoulder", type="arm")
+    right_arm_marker = MarkerBasics(topic_id="human/right_shoulder", type="arm")
+    score_marker = MarkerBasics(topic_id="score_marker", type="score")
 
 
     while not rospy.is_shutdown():
@@ -65,6 +66,7 @@ def main():
 
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
         right_arm_marker.marker_objectlisher.publish(right_arm_marker.marker_object)
+        score_marker.marker_objectlisher.publish(score_marker.marker_object)
         rate.sleep()
 
 if __name__ == '__main__':

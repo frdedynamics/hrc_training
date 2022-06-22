@@ -26,10 +26,25 @@ class GUInode:
 
     def init_subscribers_and_publishers(self):
         self.sub_emg_sum = rospy.Subscriber('/emg_sum', Int64, queue_size=1)
+        # 2 elbow heights
+        # 3 chest-to-wrist poses
+        # merged hands 
+        # HRC states
+        # Colift states
+        # TCP pose
+        # TCP force
+        # Table acc and ori
+        # Buttons states
+
+        ## PUBLISH
+        # Score
+        # Merged hands 2 -- to be used in colift state
+
 
     def set_params(self, emg_sum_th=3000, elbow_height_th=0.2):
         self.emg_sum_th = rospy.set_param('/emg_sum_th', emg_sum_th)
         self.elbow_height_th = rospy.set_param('/elbow_height_th', elbow_height_th)
+
 
     def data_logger_enabler(self):
         # TODO
@@ -37,8 +52,17 @@ class GUInode:
         #     print "enable_logging"
         #     data_logger.enable_logging()
 
+    def score_calculator(self):
+        # Start 600
+        self.update_score_marker(600)
+        # -1 each second
+        # +60 each button
+        # update score marker
+        pass
+
     def update(self):
         # self.test_count+=1
+        self.score_calculator()
         self.r.sleep()
 
         # self.pub_p_hand.publish(self.p_hand)

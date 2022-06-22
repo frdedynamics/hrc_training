@@ -10,14 +10,19 @@ from gazebo_msgs.msg import ContactsState
 import math
 
 class MarkerBasics(object):
-    def __init__(self, topic_id):
+    def __init__(self, topic_id, type="arm"):
         marker_topic = topic_id+'marker'
         self.marker_objectlisher = rospy.Publisher(marker_topic, Marker, queue_size=1)
         self.rate = rospy.Rate(25)
-        self.init_marker(index=0)
+        if type == "arm":
+            self.init_arm_marker(index=0)
+        elif type == "score":
+            self.init_score_marker()
+        else:
+            raise NameError("Marker basic type is not defined properly")
 
 
-    def init_marker(self, index=0):
+    def init_arm_marker(self, index=0):
         self.marker_object = Marker()
         self.change_frame(frame="base_link", index=0)
         self.marker_object.type = Marker.ARROW
@@ -40,6 +45,32 @@ class MarkerBasics(object):
 
         # If we want it for ever, 0, otherwise seconds before desapearing
         self.marker_object.lifetime = rospy.Duration(0)
+    
+
+    def init_score_marker(self):
+        self.marker_idx = 0
+        self.marker_object = Marker()
+        for i in range(1):
+            # self.marker_object.clear()
+            self.marker_object.header.frame_id = "base_link"
+            self.marker_object.type = self.marker_object.TEXT_VIEW_FACING
+            self.marker_object.text = str(600)
+            self.marker_object.action = self.marker_object.ADD
+            self.marker_object.scale.x = 1.0
+            self.marker_object.scale.y = 1.0
+            self.marker_object.scale.z = 1.0
+            self.marker_object.color.a = 1.0
+            self.marker_object.color.r = 1.0
+            self.marker_object.color.g = 0.0
+            self.marker_object.color.b = 1.0
+            self.marker_object.pose.orientation.w = 1.0
+            self.marker_object.pose.position.x = 1.5
+            self.marker_object.pose.position.y = 1.5
+            self.marker_object.pose.position.z = 1.5
+            self.marker_object.id = i
+    
+    def update_score_marker(self, score):
+        self.marker_object.text = str(score)
 
 
     def change_orientation(self, pitch, yaw):
