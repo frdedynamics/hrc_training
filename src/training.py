@@ -335,11 +335,15 @@ class MainWindow(QMainWindow, Form_0):
             self.logging_started_flag = True
             self.ros_node.start_time = time.time()
             chdir(DATA_PATH+'users/'+str(SELECTED_ID))
-            self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
+            if not self.RecordPlot.loggingcheckBox.isChecked():
+                self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
             self.RecordPlot.robotMoveButton.setText("Robot Stop")
         else:
-            self.urdt_proc.kill()
-            self.rosbag_proc.kill()
+            try:
+                self.urdt_proc.kill()
+                self.rosbag_proc.kill()
+            except AttributeError as e:
+                pass
             self.RecordPlot.robotMoveButton.setText("Robot Move")
         self.robotMove_clicked_flag = not self.robotMove_clicked_flag
 
