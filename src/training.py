@@ -26,6 +26,7 @@ from os import popen, chdir, mkdir
 
 PKG_PATH = Path(QDir.currentPath()).parents[0]
 DATA_PATH = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
+SELECTED_ID = 0
 
 
 class RecordPlotWindow(QWidget, Form_0):
@@ -53,9 +54,6 @@ class NewUser(QDialog, NewUserDialog):
         # self.close
         pass
 
-    def custom_closeEvent(self, event):
-        print("X is clicked")
-
 
 class MainWindow(QMainWindow, Form_0):
     def __init__(self, parent=None):
@@ -78,10 +76,13 @@ class MainWindow(QMainWindow, Form_0):
 
         self.user_path = DATA_PATH
 
-
-    def open_new_user_dialog(self):
+        # New user dialog initialization
         self.Dialog = QDialog()
         self.NewUserTool = NewUser(self)
+
+
+
+    def open_new_user_dialog(self):
         self.NewUserTool.setupUi(self.Dialog)
 
         # call randomIDcreator script here
@@ -91,12 +92,19 @@ class MainWindow(QMainWindow, Form_0):
                                                                 self.NewUserTool.armLengthLineEdit.text(),
                                                                 self.NewUserTool.leftHandcheckBox.isChecked()))
 
-        self.NewUserTool.buttonBox.accepted.connect(self.NewUserTool.create_user_folder)
+        # self.NewUserTool.buttonBox.accepted.connect(self.NewUserTool.create_user_folder)
         self.NewUserTool.buttonBox.rejected.connect(self.Dialog.close)
-        self.Dialog.closeEvent = self.NewUserTool.custom_closeEvent
+        self.Dialog.closeEvent = self.custom_closeEvent
+        self.Dialog.accepted = self.custom_accepted
 
         self.Dialog.show()
         self.Dialog.exec_()
+
+    def custom_closeEvent(self, event):
+        self.RecordPlot.recordtextEdit.append("New user created with ID number:  "+str(self.NewUserTool.userID))
+
+    def custom_accepted(self, event):
+        print("here")
 
 
     def select_user(self):
@@ -114,6 +122,8 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.userComboBox.setEditable(True)
         self.RecordPlot.userComboBox.completer().setCompletionMode(QCompleter.PopupCompletion) 
         self.RecordPlot.userComboBox.setInsertPolicy(QComboBox.NoInsert) 
+        # for trial_no in range(self.RecordPlot.trialComboBox.count()):
+        #     print(self.RecordPlot.trialComboBox.itemText(trial_no))
 
         # print(self.RecordPlot.userComboBox.currentText())
         self.RecordPlot.userComboBox.currentTextChanged.connect(self.user_combo_changed)
@@ -124,8 +134,10 @@ class MainWindow(QMainWindow, Form_0):
         proc = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
         trial_no = str(proc.stdout.read())[2:-1].split('\\n')
         # trial_no = re.split('(?:\sb\'|\\n)\s',str(proc.stdout.read()))
-        print(trial_no)
-        print(len(trial_no))
+        for trial_no in range(self.RecordPlot.trialComboBox.count()):
+            print(self.RecordPlot.trialComboBox.itemText(trial_no))
+        self.RecordPlot.userComboBox.setItemText(3, "ASD")
+
 
 
     def startRecordPlotWindow(self):
@@ -154,9 +166,11 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.newUserButton.clicked.connect(self.open_new_user_dialog)
         self.RecordPlot.selectUserButton.clicked.connect(self.select_user)
 
+        self.RecordPlot.trialComboBox.addItems([str(x) for x in range(1,11)])
+        # self.RecordPlot.userComboBox.setItemData(0, QFont('Verdana'), Qt.FontRole) ## TODO maybe
+        
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
-
 
         self.show()
 
