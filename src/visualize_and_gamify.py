@@ -2,17 +2,23 @@
 
 import rospy
 import tf2_ros
-from std_msgs.msg import String
+from std_msgs.msg import String, Int16
 from geometry_msgs.msg import Pose, Quaternion
 from Classes.MarkerBasics import MarkerBasics
 
 ref = 'human/base'
 
 force_mode = String()
+score_val = Int16()
 
 def cb_force_mode(msg):
     global force_mode
     force_mode = msg.data
+
+def cb_score_val(msg):
+    global score_val
+    score_val = msg.data
+
 
 
 def main():
@@ -23,6 +29,7 @@ def main():
     listener = tf2_ros.TransformListener(tfBuffer)
 
     sub_elbow_left = rospy.Subscriber('/force_mode', String, cb_force_mode)
+    sub_score_val = rospy.Subscriber('/score_val', Int16, cb_score_val)
 
     left_arm_marker = MarkerBasics(topic_id="human/left_shoulder", type="arm")
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder", type="arm")
@@ -63,7 +70,7 @@ def main():
         else:
             print("No force mode")
 
-
+        score_marker.update_score_marker(score_val)
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
         right_arm_marker.marker_objectlisher.publish(right_arm_marker.marker_object)
         score_marker.marker_objectlisher.publish(score_marker.marker_object)
