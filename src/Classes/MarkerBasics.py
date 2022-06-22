@@ -31,9 +31,9 @@ class MarkerBasics(object):
         self.marker_object.scale.y = 0.1
         self.marker_object.scale.z = 0.1
 
-        self.marker_object.color.r = 0
-        self.marker_object.color.g = 255
-        self.marker_object.color.b = 0
+        self.marker_object.color.r = 50
+        self.marker_object.color.g = 0
+        self.marker_object.color.b = 255
         # This has to be, otherwise it will be transparent
         self.marker_object.color.a = 1.0
 

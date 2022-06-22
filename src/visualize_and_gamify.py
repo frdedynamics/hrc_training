@@ -33,7 +33,7 @@ def main():
 
     left_arm_marker = MarkerBasics(topic_id="human/left_shoulder", type="arm")
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder", type="arm")
-    score_marker = MarkerBasics(topic_id="score_marker", type="score")
+    score_marker = MarkerBasics(topic_id="score", type="score")
 
 
     while not rospy.is_shutdown():
@@ -51,22 +51,27 @@ def main():
         right_arm_marker.marker_object.pose.position = right_shoulder_trans.transform.translation
         right_arm_marker.marker_object.pose.orientation = right_shoulder_trans.transform.rotation
 
-        if force_mode.data == 'up':
+        if force_mode == 'up':
             left_arm_marker.set_visible()
+            left_arm_marker.change_colour(R=0, G=255, B=0)
             right_arm_marker.set_visible()
-        elif force_mode.data == 'down':
+            right_arm_marker.change_colour(R=0, G=255, B=0)
+        elif force_mode == 'down':
             left_arm_marker.set_invisible()
             right_arm_marker.set_invisible()
-        elif force_mode.data == 'left':
+        elif force_mode == 'left':
             left_arm_marker.set_visible()
+            left_arm_marker.change_colour(R=0, G=255, B=0)
             right_arm_marker.set_invisible()
-        elif force_mode.data == 'right':
+        elif force_mode == 'right':
             left_arm_marker.set_invisible()
             right_arm_marker.set_visible()
-        if force_mode.data == 'down':
-            # TODO: Also change color to red maybe?
+            right_arm_marker.change_colour(R=0, G=255, B=0)
+        if force_mode == 'down':
             left_arm_marker.set_visible()
+            left_arm_marker.change_colour(R=0, G=0, B=255)
             right_arm_marker.set_visible()
+            right_arm_marker.change_colour(R=0, G=0, B=255)
         else:
             print("No force mode")
 
