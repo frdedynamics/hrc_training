@@ -213,12 +213,23 @@ class MainWindow(QMainWindow, Form_0):
         self.thresholdsTimer.start(10)
         self.RecordPlot.measureTresholdButton.setEnabled(False)
         self.RecordPlot.setTresholdButton.setEnabled(True)
+        self.RecordPlot.rightElbowCurrentLineEdit.setEnabled(True)
+        self.RecordPlot.leftElbowCurrentLineEdit.setEnabled(True)
+        self.RecordPlot.emgCurrentLineEdit.setEnabled(True)
+        self.RecordPlot.elbowTresholdLineEdit.setEnabled(False)
+        self.RecordPlot.emgTresholdLineEdit.setEnabled(False)
 
 
     def setTreshold_clicked(self):
         self.thresholdsTimer.stop()
         self.RecordPlot.measureTresholdButton.setEnabled(True)
         self.RecordPlot.setTresholdButton.setEnabled(False)
+        self.RecordPlot.rightElbowCurrentLineEdit.setEnabled(False)
+        self.RecordPlot.leftElbowCurrentLineEdit.setEnabled(False)
+        self.RecordPlot.emgCurrentLineEdit.setEnabled(False)
+        self.RecordPlot.elbowTresholdLineEdit.setEnabled(True)
+        self.RecordPlot.emgTresholdLineEdit.setEnabled(True)
+
 
 
     def humanJointReset_clicked(self):
@@ -323,9 +334,9 @@ class MainWindow(QMainWindow, Form_0):
         self.ros_node.r.sleep()
 
     def measure_thresholds_update(self):
-        self.RecordPlot.leftElbowCurrentLineEdit.setText(str(self.ros_node.left_elbow_current))
-        self.RecordPlot.rightElbowCurrentLineEdit.setText(str(self.ros_node.right_elbow_current))
-        self.RecordPlot.emgCurrentLineEdit.setText(str(self.ros_node.right_elbow_current))
+        self.RecordPlot.leftElbowCurrentLineEdit.setText("%.3f"%self.ros_node.left_elbow_current)
+        self.RecordPlot.rightElbowCurrentLineEdit.setText("%.3f"%self.ros_node.right_elbow_current)
+        self.RecordPlot.emgCurrentLineEdit.setText("%4.0f"%self.ros_node.right_elbow_current)
 
 
 if __name__ == '__main__':
