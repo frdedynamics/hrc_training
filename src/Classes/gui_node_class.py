@@ -7,7 +7,8 @@ Gui's ROS related things got over this class. TEST for now
 
 import rospy
 from sensor_msgs.msg import JointState
-from std_msgs.msg import String, Int64
+from std_msgs.msg import String, Int64, Int16
+from geometry_msgs.msg import Pose
 # import Data.data_logger_module as data_logger
 
 _CALIBRATION_TH = 60
@@ -21,12 +22,18 @@ class GUInode:
         self.r = rospy.Rate(rate)
         self.emg_sum = Int64()
         self.emg_sum_th = 3000
+        self.right_elbow_current = 0
+        self.left_elbow_current = 0
         self.elbow_height_th = 0.2
+        self.score_val = 600
         
 
     def init_subscribers_and_publishers(self):
-        self.sub_emg_sum = rospy.Subscriber('/emg_sum', Int64, queue_size=1)
+        # EMG sum
+        self.sub_emg_sum = rospy.Subscriber('/emg_sum', Int64, self.emg_sum_cb)
         # 2 elbow heights
+        self.sub_right_elbow = rospy.Subscriber('/elbow_right', Pose, self.right_elbow_cb)
+        self.sub_left_elbow = rospy.Subscriber('/left_right', Pose, self.left_elbow_cb)
         # 3 chest-to-wrist poses
         # merged hands 
         # HRC states
@@ -38,6 +45,7 @@ class GUInode:
 
         ## PUBLISH
         # Score
+        self.pub_score_val = rospy.Publisher('/score_val', Int16, queue_size=1)
         # Merged hands 2 -- to be used in colift state
 
 
@@ -54,11 +62,10 @@ class GUInode:
 
     def score_calculator(self):
         # Start 600
-        self.update_score_marker(600)
+        self.score_val = 600
         # -1 each second
         # +60 each button
         # update score marker
-        pass
 
     def update(self):
         # self.test_count+=1
@@ -66,6 +73,7 @@ class GUInode:
         self.r.sleep()
 
         # self.pub_p_hand.publish(self.p_hand)
+        self.pub_score_val.publish(self.score_val)
 
         # implement this from  DH_game for Rviz visualization
         # try:
@@ -76,5 +84,12 @@ class GUInode:
 
     def emg_sum_cb(self, msg):
         self.emg_sum = msg.data
+
+
+    def right_elbow_cb(self, msg):
+        self.right_elbow_current = msg.position.y
+
+    def left_elbow_cb(self, msg):
+        self.left_elbow_current = msg.position.y
 
     

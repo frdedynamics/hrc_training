@@ -66,8 +66,10 @@ class MainWindow(QMainWindow, Form_0):
         self.ros_node = GUInode()
         self.rosTimer=QTimer()
         self.guiTimer=QTimer()
+        self.thresholdsTimer=QTimer()
         self.rosTimer.timeout.connect(self.ros_node.update)
         self.guiTimer.timeout.connect(self.gui_update)
+        self.thresholdsTimer.timeout.connect(self.measure_thresholds_update)
 
         self.human_proc = None
         self.myo_proc = None
@@ -150,6 +152,8 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.humanJointResetButton.setEnabled(False)
         self.RecordPlot.emgResetButton.setEnabled(False)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
+        self.RecordPlot.measureTresholdButton.setEnabled(False)
+        self.RecordPlot.setTresholdButton.setEnabled(False)
         self.RecordPlot.gripperInitiateButton.setEnabled(False)
         self.RecordPlot.robotMoveButton.setEnabled(False)
 
@@ -159,6 +163,8 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.humanJointResetButton.clicked.connect(self.humanJointReset_clicked)
         self.RecordPlot.emgResetButton.clicked.connect(self.emgReset_clicked)
         self.RecordPlot.humanInitiateButton.clicked.connect(self.humanInitiate_clicked)
+        self.RecordPlot.measureTresholdButton.clicked.connect(self.measureTreshold_clicked)
+        self.RecordPlot.setTresholdButton.clicked.connect(self.setTreshold_clicked)
         self.RecordPlot.gripperInitiateButton.clicked.connect(self.gripperInitiate_clicked)
         self.RecordPlot.robotMoveButton.clicked.connect(self.robotMove_clicked)
         self.RecordPlot.buttonBox.clicked.connect(self.stop_all_roslaunch)
@@ -200,6 +206,19 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
         self.RecordPlot.humanJointResetButton.setEnabled(True)
+        self.RecordPlot.measureTresholdButton.setEnabled(True)
+
+    
+    def measureTreshold_clicked(self):
+        self.thresholdsTimer.start(10)
+        self.RecordPlot.measureTresholdButton.setEnabled(False)
+        self.RecordPlot.setTresholdButton.setEnabled(True)
+
+
+    def setTreshold_clicked(self):
+        self.thresholdsTimer.stop()
+        self.RecordPlot.measureTresholdButton.setEnabled(True)
+        self.RecordPlot.setTresholdButton.setEnabled(False)
 
 
     def humanJointReset_clicked(self):
@@ -302,6 +321,11 @@ class MainWindow(QMainWindow, Form_0):
     def gui_update(self):
         self.ros_node.update()
         self.ros_node.r.sleep()
+
+    def measure_thresholds_update(self):
+        self.RecordPlot.leftElbowCurrentLineEdit.setText(str(self.ros_node.left_elbow_current))
+        self.RecordPlot.rightElbowCurrentLineEdit.setText(str(self.ros_node.right_elbow_current))
+        self.RecordPlot.emgCurrentLineEdit.setText(str(self.ros_node.right_elbow_current))
 
 
 if __name__ == '__main__':
