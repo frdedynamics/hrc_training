@@ -44,6 +44,7 @@ class NewUser(QDialog, NewUserDialog):
     def create_random_ID(self, name, height, arm_length, left_handed):
         self.userID = randomIDcreator.main(name, height, arm_length, left_handed)
         self.IDlabel.setText(str(self.userID))
+        SELECTED_ID = self.userID
 
     def create_user_folder(self):
         new_folder = DATA_PATH+"users/"+str(self.userID)
@@ -77,6 +78,7 @@ class MainWindow(QMainWindow, Form_0):
         self.myo_proc = None
         self.urdt_proc = None
         self.gripper_proc = None
+        self.rosbag_proc = None
 
         self.user_path = DATA_PATH
 
@@ -188,13 +190,15 @@ class MainWindow(QMainWindow, Form_0):
         self.guiTimer.start(500)
         self.ros_node.init_subscribers_and_publishers()
         self.start_single_roslaunch('/launch/gui.launch') # I need this to set a UUID for later added nodes
-        # sleep(1)
+        sleep(1)
         # I start environment related things here too cuz there is no dependency. But it can be moved somewhere later.
         # rosrun rosserial_python serial_node.py /dev/ttyACM0
-        # try:
-        #     self.add_rosnode("rosserial_python", "serial_node.py", "arduino_buttons_node", args="/dev/ttyACM0")
-        # except:
-        #     print("no Arduino no started")
+        try:
+            self.add_rosnode("rosserial_python", "serial_node.py", "arduino_buttons_node", args="/dev/ttyACM1")
+        except:
+            print("no Arduino no started")
+        sleep(1)
+        self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
 
         self.RecordPlot.awindaButton.setEnabled(True)
 
@@ -319,6 +323,10 @@ class MainWindow(QMainWindow, Form_0):
         self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
         self.logging_started_flag = True
         self.ros_node.start_time = time.time()
+        chdir(DATA_PATH+'users/'+str(SELECTED_ID))
+        self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
+
+
 
 
     def start_single_roslaunch(self, name):

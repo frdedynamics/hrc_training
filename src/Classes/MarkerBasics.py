@@ -107,8 +107,8 @@ class MarkerBasics(object):
         #rospy.loginfo("PositionMarker-X="+str(self.marker_object.pose.position.x))
 
 
-    def set_visible(self):
-        self.marker_object.color.a = 1.0
+    def set_visible(self, transparancy=1.0):
+        self.marker_object.color.a = transparancy
 
 
     def set_invisible(self):

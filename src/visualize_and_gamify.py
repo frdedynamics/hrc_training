@@ -57,8 +57,10 @@ def main():
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=255, B=0)
         elif force_mode == 'down':
-            left_arm_marker.set_invisible()
-            right_arm_marker.set_invisible()
+            left_arm_marker.set_visible()
+            left_arm_marker.change_colour(R=0, G=0, B=255)
+            right_arm_marker.set_visible()
+            right_arm_marker.change_colour(R=0, G=0, B=255)
         elif force_mode == 'left':
             left_arm_marker.set_visible()
             left_arm_marker.change_colour(R=0, G=255, B=0)
@@ -67,13 +69,13 @@ def main():
             left_arm_marker.set_invisible()
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=255, B=0)
-        if force_mode == 'down':
-            left_arm_marker.set_visible()
-            left_arm_marker.change_colour(R=0, G=0, B=255)
-            right_arm_marker.set_visible()
-            right_arm_marker.change_colour(R=0, G=0, B=255)
+        elif force_mode == 'null':
+            left_arm_marker.set_visible(transparancy=0.2)
+            right_arm_marker.set_visible(transparancy=0.2)            
         else:
             print("No force mode")
+            left_arm_marker.set_invisible()
+            right_arm_marker.set_invisible()
 
         score_marker.update_score_marker(score_val)
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
