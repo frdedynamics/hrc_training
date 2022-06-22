@@ -24,6 +24,8 @@ import subprocess, time
 from pathlib import Path
 from os import popen, chdir, mkdir
 
+import rospy
+
 PKG_PATH = Path(QDir.currentPath()).parents[0]
 DATA_PATH = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
 SELECTED_ID = 0
@@ -73,6 +75,8 @@ class MainWindow(QMainWindow, Form_0):
         self.thresholdsTimer.timeout.connect(self.measure_thresholds_update)
 
         self.logging_started_flag = False
+        if rospy.has_param('/robot_move_started'):
+            rospy.delete_param('/robot_move_started')
 
         self.human_proc = None
         self.myo_proc = None
@@ -193,11 +197,11 @@ class MainWindow(QMainWindow, Form_0):
         sleep(1)
         # I start environment related things here too cuz there is no dependency. But it can be moved somewhere later.
         # rosrun rosserial_python serial_node.py /dev/ttyACM0
-        try:
-            self.add_rosnode("rosserial_python", "serial_node.py", "arduino_buttons_node", args="/dev/ttyACM1")
-        except:
-            print("no Arduino no started")
-        sleep(1)
+        # try:
+        #     self.add_rosnode(pkg_name="rosserial_python", node_name="serial_node.py", name="arduino_buttons_node", args="/dev/ttyACM1")
+        # except:
+        #     print("no Arduino no started")
+        # sleep(1)
         self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
 
         self.RecordPlot.awindaButton.setEnabled(True)
@@ -321,6 +325,10 @@ class MainWindow(QMainWindow, Form_0):
 
     def robotMove_clicked(self):
         self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
+
+        while not rospy.has_param('/robot_move_started'):
+            print("waiting for robot")
+
         self.logging_started_flag = True
         self.ros_node.start_time = time.time()
         chdir(DATA_PATH+'users/'+str(SELECTED_ID))
