@@ -31,7 +31,7 @@ def main():
 
     while not rospy.is_shutdown():
         try:
-            left_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/left_shoulder_0', rospy.Time())
+            left_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/left_shoulder', rospy.Time())
             right_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/right_shoulder', rospy.Time())
 
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
@@ -61,7 +61,7 @@ def main():
             left_arm_marker.set_visible()
             right_arm_marker.set_visible()
         else:
-            right_arm_marker.set_invisible()
+            print("No force mode")
 
 
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
