@@ -84,6 +84,8 @@ class MainWindow(QMainWindow, Form_0):
         self.gripper_proc = None
         self.rosbag_proc = None
 
+        self.robotMove_clicked_flag = False
+
         self.user_path = DATA_PATH
 
         # New user dialog initialization
@@ -324,17 +326,22 @@ class MainWindow(QMainWindow, Form_0):
 
 
     def robotMove_clicked(self):
-        self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
+        if not self.robotMove_clicked_flag:
+            self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
 
-        while not rospy.has_param('/robot_move_started'):
-            print("waiting for robot")
+            while not rospy.has_param('/robot_move_started'):
+                print("waiting for robot")
 
-        self.logging_started_flag = True
-        self.ros_node.start_time = time.time()
-        chdir(DATA_PATH+'users/'+str(SELECTED_ID))
-        self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
-
-
+            self.logging_started_flag = True
+            self.ros_node.start_time = time.time()
+            chdir(DATA_PATH+'users/'+str(SELECTED_ID))
+            self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
+            self.RecordPlot.robotMoveButton.setText("Robot Stop")
+        else:
+            self.urdt_proc.kill()
+            self.rosbag_proc.kill()
+            self.RecordPlot.robotMoveButton.setText("Robot Move")
+        self.robotMove_clicked_flag = not self.robotMove_clicked_flag
 
 
     def start_single_roslaunch(self, name):
@@ -355,6 +362,7 @@ class MainWindow(QMainWindow, Form_0):
             self.myo_proc.kill()
             self.urdt_proc.kill()
             self.gripper_proc.kill()
+            self.rosbag_proc.kill()
         except AttributeError as e:
             pass
         p_kill1 = subprocess.Popen(["rosnode", "kill", "-a"]) # not sure if I need a return object. Keep it for now
