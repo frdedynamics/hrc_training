@@ -10,7 +10,7 @@ from math import pi
 
 import sys
 import re # for split string with multiple delimiters
-from time import sleep
+from time import sleep, time
 from os import chdir
 
 from Classes.main import Ui_Form as Form_0
@@ -282,15 +282,24 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
         self.RecordPlot.recordtextEdit.repaint()
 
+        sleep(1)
+        self.RecordPlot.recordtextEdit.append(self.RecordPlot.elbowTresholdLineEdit.text())
+        self.RecordPlot.recordtextEdit.append(str(len(self.RecordPlot.elbowTresholdLineEdit.text())))
+        self.RecordPlot.recordtextEdit.append(self.RecordPlot.emgTresholdLineEdit.text())
+        self.RecordPlot.recordtextEdit.append(str(len(self.RecordPlot.emgTresholdLineEdit.text())))
+        self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
+        self.RecordPlot.recordtextEdit.repaint()
+
         # TODO: set elbow_height_th, emg_sum, hand_dominance parameters
-        if (len(self.RecordPlot.elbowTresholdLineEdit.text())>0 and self.RecordPlot.emgTresholdLabel.text()>0):
-            elbow_th = int(self.RecordPlot.elbowTresholdLineEdit.text())
-            emg_th = int(self.RecordPlot.emgTresholdLabel.text())
+        if(len(self.RecordPlot.elbowTresholdLineEdit.text())>0 and len(self.RecordPlot.emgTresholdLineEdit.text())>0):
+            elbow_th = float(self.RecordPlot.elbowTresholdLineEdit.text())
+            emg_th = int(self.RecordPlot.emgTresholdLineEdit.text())
             self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th)
 
             self.RecordPlot.gripperInitiateButton.setEnabled(True)
         else:
             print("Elbow and EMG calibrations are not completed")
+            self.RecordPlot.recordtextEdit.append("Elbow and EMG calibrations are not completed")
 
 
     def gripperInitiate_clicked(self):
@@ -309,7 +318,7 @@ class MainWindow(QMainWindow, Form_0):
     def robotMove_clicked(self):
         self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
         self.logging_started_flag = True
-        self.ros_node.start_time = time()
+        self.ros_node.start_time = time.time()
 
 
     def start_single_roslaunch(self, name):

@@ -27,7 +27,8 @@ class GUInode:
         self.right_elbow_current = 0
         self.left_elbow_current = 0
         self.elbow_height_th = 0.2
-        self.score_val = _INIT_SCORE
+        self.score_val = Int16()
+        self.score_val.data = _INIT_SCORE
         self.start_time = 0
         self.stop_time = 0 
         
@@ -46,7 +47,7 @@ class GUInode:
         # TCP force
         # Table acc and ori
         # Buttons states
-        self.sub_button1 = rospy.Subscriber()
+        # self.sub_button1 = rospy.Subscriber()
 
         ## PUBLISH
         # Score
@@ -68,14 +69,17 @@ class GUInode:
     def score_calculator(self):
         # -1 each second
         self.stop_time = time()
-        elapsed = int(self.stop_time - self.start_time)
-        self.score_val = _INIT_SCORE - elapsed
+        if self.start_time == 0:
+            elapsed = 0
+        else:
+            elapsed = int(self.stop_time - self.start_time)
+        self.score_val.data = _INIT_SCORE - elapsed
         # +60 each button
         # update score marker
 
 
     def update(self):
-        # self.test_count+=1
+
         self.score_calculator()
         self.r.sleep()
 
@@ -96,7 +100,7 @@ class GUInode:
 
 
     def right_elbow_cb(self, msg):
-        self.right_elbow_current = msg.position.y
+        self.right_elbow_current = -msg.position.y
 
     def left_elbow_cb(self, msg):
         self.left_elbow_current = msg.position.y
