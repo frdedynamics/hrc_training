@@ -71,6 +71,8 @@ class MainWindow(QMainWindow, Form_0):
         self.guiTimer.timeout.connect(self.gui_update)
         self.thresholdsTimer.timeout.connect(self.measure_thresholds_update)
 
+        self.logging_started_flag = False
+
         self.human_proc = None
         self.myo_proc = None
         self.urdt_proc = None
@@ -299,6 +301,8 @@ class MainWindow(QMainWindow, Form_0):
 
     def robotMove_clicked(self):
         self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
+        self.logging_started_flag = True
+        self.ros_node.start_time = time()
 
 
     def start_single_roslaunch(self, name):
