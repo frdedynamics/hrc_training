@@ -31,9 +31,9 @@ def main():
     sub_elbow_left = rospy.Subscriber('/force_mode', String, cb_force_mode)
     sub_score_val = rospy.Subscriber('/score_val', Int16, cb_score_val)
 
-    left_arm_marker = MarkerBasics(topic_id="human/left_shoulder", type="arm")
-    right_arm_marker = MarkerBasics(topic_id="human/right_shoulder", type="arm")
-    score_marker = MarkerBasics(topic_id="score", type="score")
+    left_arm_marker = MarkerBasics(topic_id="human/left_shoulder_", type="arm")
+    right_arm_marker = MarkerBasics(topic_id="human/right_shoulder_", type="arm")
+    score_marker = MarkerBasics(topic_id="score_", type="score")
 
 
     while not rospy.is_shutdown():
