@@ -188,6 +188,13 @@ class MainWindow(QMainWindow, Form_0):
         self.guiTimer.start(500)
         self.ros_node.init_subscribers_and_publishers()
         self.start_single_roslaunch('/launch/gui.launch') # I need this to set a UUID for later added nodes
+        # sleep(1)
+        # I start environment related things here too cuz there is no dependency. But it can be moved somewhere later.
+        # rosrun rosserial_python serial_node.py /dev/ttyACM0
+        # try:
+        #     self.add_rosnode("rosserial_python", "serial_node.py", "arduino_buttons_node", args="/dev/ttyACM0")
+        # except:
+        #     print("no Arduino no started")
 
         self.RecordPlot.awindaButton.setEnabled(True)
 
@@ -340,7 +347,7 @@ class MainWindow(QMainWindow, Form_0):
     def measure_thresholds_update(self):
         self.RecordPlot.leftElbowCurrentLineEdit.setText("%.3f"%self.ros_node.left_elbow_current)
         self.RecordPlot.rightElbowCurrentLineEdit.setText("%.3f"%self.ros_node.right_elbow_current)
-        self.RecordPlot.emgCurrentLineEdit.setText("%4.0f"%self.ros_node.right_elbow_current)
+        self.RecordPlot.emgCurrentLineEdit.setText("%4.0f"%self.ros_node.emg_sum)
 
 
 if __name__ == '__main__':
