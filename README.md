@@ -1,9 +1,42 @@
-# HRC Training for user tests
+# Gamified HRC Training
 
-This repository contains the bridging code between `imu_human_pkg`, `arm_motion_pkg_py3`(will be depreciated) `data_logger`(now publicly available - will be depreciated) and automizes the whole system. 
+This repository contains a bridging code between `imu_human_pkg` (new Human Commander and Robot Commander), `arm_motion_pkg_py3`(old Human Commander - will be depreciated) `data_logger`(beta version - use `rosbag` for generic data logging for now) and automizes the whole system. The repository contains the GUI and game score node. This README file contains what is available in the package currently (30/06/2022) and new features are still being developed. The README update might be slower.
+
+![](/home/gizem/catkin_ws/src/hrc_training/fig/hrc_training_gui.png)
+
+### Record Groupbox:
+
+It allows starting the Human Commander, Robot Commander and Task Environment measurements through GUI. Either new user can be created or a created user can be selected. (Note: For privacy reasons, the recorded data is automatically located outside of the repository.)
+
+* **roscore**: Starts the ROS launch file for GUI nodes.
+
+* **awindamonitor**: Starts the Xsens Awinda Base Station ROS node (Source code credit for:  https://github.com/Raffa87/xsense-awinda.git)
+
+* **Select User** and **New User**: (Optional) The GUI allows recording data automatically but it is still in beta mode. Trial no is also related to user data recording.
+
+* **Human Calibrate**: Calibrates IMUs on the body. The human should stay in N-pose. This calibration can be reseted by **Human Joint Reset** button. Similarly **EMG Reset** button resets the EMG sensor node.
+
+* **Measure Threshold**: Starts active measurements from both elbow heights for COLIFT direction threshold and EMG for gripper activation threshold.
+
+* **Set Thresholds**: Locks the *left elbow current*, *right elbow current*, and  *EMG threshold* line-edits so that the decided thresholds can be manually enteres in *elbow threshold* and *emg threshold* parts.
+
+* **Human Initiate**: The initial position of the human. Also defined as the origin of human-to-robot relative mapping. Not restricted to provide "self expression" game element but suggested to have elbows bent, two palms looking downwards as follows:
+
+  ![](/home/gizem/catkin_ws/src/hrc_training/fig/human_init.png)
+
+* **Gripper Initiate**: Starts required TCP connections with Robotiq 2-finger adaptive gripper.
+
+* **Robot Move**: Starts the HRC scenario in IDLE state.
+
+### Plot Groupbox:
+
+It is aimed to see the users learning curve, comparative user performance, comparative trial success etc. plots via GUI easily. The implementation is not completed yet. 
 
 ## Dependencies:
-- `imu_human_pkg`
+
+The packages used in the example setup are given below. However, if you have other human commander or robot commander, you need to enable them manually.
+
+- `imu_human_pkg` 
 - `arm_motion_pkg_py3`
 - `ur_rtde`(Python) and a UR5e robot
 - `ros_magic_pkg`

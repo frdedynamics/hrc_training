@@ -185,7 +185,7 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.trialComboBox.addItems([str(x) for x in range(1,11)])
         # self.RecordPlot.userComboBox.setItemData(0, QFont('Verdana'), Qt.FontRole) ## TODO maybe
         
-        self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC bla bla")
+        self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC TRAINING GAME!")
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
 
         self.show()
