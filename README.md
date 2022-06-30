@@ -46,3 +46,7 @@ The packages used in the example setup are given below. However, if you have oth
 - Start `roscore`.
 - `roscd hrc_training/src`
 - `./training.py`
+
+
+## Troubleshoot:
+- For plug-and-play usage, please plug the EMG sensor dongle first and connect the receiver Arduino after. By doing that, you make sure the **Human Initiate** button to get EMG signals from `/dev/ttyACM0` and Arduino signals from `/dev/ttyACM1`. You can change it manually by modifying the human_pkg*/launch/human.launch and set the EMG sensor port as `ttyACM1` and starting the Arduino manually with the following command: `rosrun rosserial_python serial_node.py /dev/ttyACM0`
