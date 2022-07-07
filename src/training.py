@@ -263,7 +263,8 @@ class MainWindow(QMainWindow, Form_0):
     def emgReset_clicked(self):
         self.RecordPlot.emgResetButton.setEnabled(False)
         self.RecordPlot.recordtextEdit.append("EMG resetting")
-        subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_to_gripper", "/world_to_myo_tf_publisher"])
+        # subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_to_gripper", "/world_to_myo_tf_publisher"])
+        subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_sum_node", "/world_to_myo_tf_publisher"])
         sleep(2.0)
         subprocess.Popen(["sh", "../sh/myo.sh"])
         self.RecordPlot.recordtextEdit.append("EMG reset DONE")
