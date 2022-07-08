@@ -7,7 +7,7 @@ Gui's ROS related things got over this class. TEST for now
 
 import rospy
 from sensor_msgs.msg import JointState
-from std_msgs.msg import String, Int16
+from std_msgs.msg import String, Int16, Int8
 from geometry_msgs.msg import Pose
 from time import time
 # import Data.data_logger_module as data_logger
@@ -31,6 +31,9 @@ class GUInode:
         self.score_val.data = _INIT_SCORE
         self.start_time = 0
         self.stop_time = 0 
+        self.button1_flag = 0
+        self.button2_flag = 0
+        self.registered_buttons = ["button1", "button2"]
         
 
     def init_subscribers_and_publishers(self):
@@ -48,6 +51,8 @@ class GUInode:
         # Table acc and ori
         # Buttons states
         # self.sub_button1 = rospy.Subscriber()
+        self.sub_button1_state = rospy.Subscriber('/button1_state', Int8, self.button1_cb)
+        self.sub_button1_state = rospy.Subscriber('/button2_state', Int8, self.button2_cb)
 
         ## PUBLISH
         # Score
@@ -66,6 +71,7 @@ class GUInode:
         #     print "enable_logging"
         #     data_logger.enable_logging()
 
+
     def score_calculator(self):
         # -1 each second
         self.stop_time = time()
@@ -74,8 +80,23 @@ class GUInode:
         else:
             elapsed = int(self.stop_time - self.start_time)
         self.score_val.data = _INIT_SCORE - elapsed
+
         # +60 each button
-        # update score marker
+        if self.button1_flag:
+            self.score_val.data += 60
+            try:
+                self.registered_buttons.remove("button1")
+            except ValueError:
+                pass
+        if self.button2_flag:
+            self.score_val.data += 60
+            try:
+                self.registered_buttons.remove("button2")
+            except ValueError:
+                pass
+
+        # table jerk to score
+        #I need online filter. TODO later
 
 
     def update(self):
@@ -98,11 +119,18 @@ class GUInode:
     def emg_sum_cb(self, msg):
         self.emg_sum = msg.data
 
-
     def right_elbow_cb(self, msg):
         self.right_elbow_current = -msg.position.y
 
     def left_elbow_cb(self, msg):
         self.left_elbow_current = msg.position.y
+
+    def button1_cb(self, msg):
+        if msg.data > 0:
+            self.button1_flag = True
+
+    def button2_cb(self, msg):
+        if msg.data > 0:
+            self.button2_flag = True
 
     
