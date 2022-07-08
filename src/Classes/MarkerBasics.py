@@ -18,6 +18,9 @@ class MarkerBasics(object):
             self.init_arm_marker(index=0)
         elif type == "score":
             self.init_score_marker()
+        elif type == "regular_str":
+            text = " "
+            self.init_str_marker(text)
         else:
             raise NameError("Marker basic type is not defined properly")
 
@@ -71,6 +74,42 @@ class MarkerBasics(object):
     
     def update_score_marker(self, score):
         self.marker_object.text = str(score)
+
+    
+    def init_str_marker(self, text):
+        self.marker_idx = 1
+        self.marker_object = Marker()
+        for i in range(1):
+            # self.marker_object.clear()
+            self.marker_object.header.frame_id = "base_link"
+            self.marker_object.type = self.marker_object.TEXT_VIEW_FACING
+            self.marker_object.text = text
+            self.marker_object.action = self.marker_object.ADD
+            self.marker_object.scale.x = 0.4
+            self.marker_object.scale.y = 0.4
+            self.marker_object.scale.z = 0.4
+            self.marker_object.color.a = 1.0
+            self.marker_object.color.r = 1.0
+            self.marker_object.color.g = 0.0
+            self.marker_object.color.b = 1.0
+            self.marker_object.pose.orientation.w = 1.0
+            self.marker_object.pose.position.x = 0.0
+            self.marker_object.pose.position.y = 0.0
+            self.marker_object.pose.position.z = 1.2
+            self.marker_object.id = i
+            
+    
+    def update_str_marker(self, text, R, G, B):
+
+        # R = 1.0
+        # G = 0.0
+        # B = 0.0
+        # really no idea why it doesn't accept 255 and gives black if the value is not 1.0. But, well...
+        self.marker_object.text = text
+        self.marker_object.color.a = 1.0
+        self.marker_object.color.r = R/255
+        self.marker_object.color.g = G/255
+        self.marker_object.color.b = B/255
 
 
     def change_orientation(self, pitch, yaw):

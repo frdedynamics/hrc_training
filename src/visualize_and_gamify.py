@@ -35,6 +35,7 @@ def main():
     left_arm_marker = MarkerBasics(topic_id="human/left_shoulder_", type="arm")
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder_", type="arm")
     score_marker = MarkerBasics(topic_id="score_", type="score")
+    colift_dir_str_marker = MarkerBasics(topic_id="colift_dir_", type="regular_str")
 
     force_mode.data = "s"
 
@@ -58,22 +59,27 @@ def main():
             left_arm_marker.change_colour(R=0, G=255, B=0)
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=255, B=0)
+            colift_dir_str_marker.update_str_marker("UP", R=0, G=255, B=0)
         elif force_mode.data == "d":
             left_arm_marker.set_visible()
             left_arm_marker.change_colour(R=0, G=0, B=255)
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=0, B=255)
+            colift_dir_str_marker.update_str_marker("DOWN", R=0, G=0, B=255)
         elif force_mode.data == "l":
             left_arm_marker.set_visible()
             left_arm_marker.change_colour(R=0, G=255, B=0)
             right_arm_marker.set_invisible()
+            colift_dir_str_marker.update_str_marker("LEFT", R=0, G=255, B=0)
         elif force_mode.data == "r":
             left_arm_marker.set_invisible()
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=255, B=0)
+            colift_dir_str_marker.update_str_marker("RIGHT", R=0, G=255, B=0)
         elif force_mode.data == "s":
             left_arm_marker.set_visible(transparancy=0.2)
             right_arm_marker.set_visible(transparancy=0.2)            
+            colift_dir_str_marker.update_str_marker(" ", R=0, G=0, B=0)
         else:
             print("No force mode")
             left_arm_marker.set_invisible()
@@ -83,6 +89,7 @@ def main():
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
         right_arm_marker.marker_objectlisher.publish(right_arm_marker.marker_object)
         score_marker.marker_objectlisher.publish(score_marker.marker_object)
+        colift_dir_str_marker.marker_objectlisher.publish(colift_dir_str_marker.marker_object)
         rate.sleep()
 
 if __name__ == '__main__':
