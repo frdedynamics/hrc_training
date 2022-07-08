@@ -7,7 +7,7 @@ Gui's ROS related things got over this class. TEST for now
 
 import rospy
 from sensor_msgs.msg import JointState
-from std_msgs.msg import String, Int16, Int8
+from std_msgs.msg import String, Int16, Int8, Bool
 from geometry_msgs.msg import Pose
 from time import time
 # import Data.data_logger_module as data_logger
@@ -34,6 +34,8 @@ class GUInode:
         self.button1_flag = 0
         self.button2_flag = 0
         self.registered_buttons = ["button1", "button2"]
+        self.game_over_flag = Bool()
+        self.game_over_flag.data = False
         
 
     def init_subscribers_and_publishers(self):
@@ -53,6 +55,7 @@ class GUInode:
         # self.sub_button1 = rospy.Subscriber()
         self.sub_button1_state = rospy.Subscriber('/button1_state', Int8, self.button1_cb)
         self.sub_button1_state = rospy.Subscriber('/button2_state', Int8, self.button2_cb)
+        self.sub_game_over_flag = rospy.Subscriber('/game_over_flag', Bool, self.game_over_flag_cb)
 
         ## PUBLISH
         # Score
@@ -101,7 +104,8 @@ class GUInode:
 
     def update(self):
 
-        self.score_calculator()
+        if not self.game_over_flag.data:
+            self.score_calculator()
         self.r.sleep()
 
         # self.pub_p_hand.publish(self.p_hand)
@@ -132,5 +136,8 @@ class GUInode:
     def button2_cb(self, msg):
         if msg.data > 0:
             self.button2_flag = True
+
+    def game_over_flag_cb(self, msg):
+        self.game_over_flag = msg
 
     
