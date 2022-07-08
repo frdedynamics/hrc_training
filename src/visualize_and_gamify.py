@@ -13,7 +13,7 @@ score_val = Int16()
 
 def cb_force_mode(msg):
     global force_mode
-    force_mode = msg.data
+    force_mode = msg
 
 def cb_score_val(msg):
     global score_val
@@ -22,20 +22,21 @@ def cb_score_val(msg):
 
 
 def main():
+    global force_mode
     rospy.init_node('rviz_markers', anonymous=True)
     rate = rospy.Rate(100)
 
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
 
-    sub_elbow_left = rospy.Subscriber('/colift_dir', String, cb_force_mode)
+    sub_colift_dir = rospy.Subscriber('/colift_dir', String, cb_force_mode)
     sub_score_val = rospy.Subscriber('/score_val', Int16, cb_score_val)
 
     left_arm_marker = MarkerBasics(topic_id="human/left_shoulder_", type="arm")
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder_", type="arm")
     score_marker = MarkerBasics(topic_id="score_", type="score")
 
-    force_mode = "s"
+    force_mode.data = "s"
 
     while not rospy.is_shutdown():
         try:
@@ -52,25 +53,25 @@ def main():
         right_arm_marker.marker_object.pose.position = right_shoulder_trans.transform.translation
         right_arm_marker.marker_object.pose.orientation = right_shoulder_trans.transform.rotation
 
-        if force_mode == "u":
+        if force_mode.data == "u":
             left_arm_marker.set_visible()
             left_arm_marker.change_colour(R=0, G=255, B=0)
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=255, B=0)
-        elif force_mode == "d":
+        elif force_mode.data == "d":
             left_arm_marker.set_visible()
             left_arm_marker.change_colour(R=0, G=0, B=255)
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=0, B=255)
-        elif force_mode == "l":
+        elif force_mode.data == "l":
             left_arm_marker.set_visible()
             left_arm_marker.change_colour(R=0, G=255, B=0)
             right_arm_marker.set_invisible()
-        elif force_mode == "r":
+        elif force_mode.data == "r":
             left_arm_marker.set_invisible()
             right_arm_marker.set_visible()
             right_arm_marker.change_colour(R=0, G=255, B=0)
-        elif force_mode == "s":
+        elif force_mode.data == "s":
             left_arm_marker.set_visible(transparancy=0.2)
             right_arm_marker.set_visible(transparancy=0.2)            
         else:
