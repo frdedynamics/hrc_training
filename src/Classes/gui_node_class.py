@@ -10,6 +10,7 @@ from sensor_msgs.msg import JointState
 from std_msgs.msg import String, Int16, Int8, Bool
 from geometry_msgs.msg import Pose
 from time import time
+import datetime
 # import Data.data_logger_module as data_logger
 
 _CALIBRATION_TH = 60
@@ -36,6 +37,8 @@ class GUInode:
         self.registered_buttons = ["button1", "button2"]
         self.game_over_flag = Bool()
         self.game_over_flag.data = False
+        self.now = String()
+        self.now.data = str(datetime.datetime.now())
         
 
     def init_subscribers_and_publishers(self):
@@ -60,6 +63,7 @@ class GUInode:
         ## PUBLISH
         # Score
         self.pub_score_val = rospy.Publisher('/score_val', Int16, queue_size=1)
+        self.pub_time = rospy.Publisher('/now', String, queue_size=1)
         # Merged hands 2 -- to be used in colift state
 
 
@@ -109,6 +113,9 @@ class GUInode:
         self.r.sleep()
 
         self.pub_score_val.publish(self.score_val)
+
+        self.now.data = str(datetime.datetime.now())
+        self.pub_time.publish(self.now)
 
 
 ## CALLBACKS

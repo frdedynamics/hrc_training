@@ -20,7 +20,7 @@ from Classes.new_user import Ui_Dialog as NewUserDialog
 import Classes.randomIDcreator as randomIDcreator
 
 import roslaunch
-import subprocess, time
+import subprocess, time, datetime
 from pathlib import Path
 from os import popen, chdir, mkdir
 
@@ -91,6 +91,7 @@ class MainWindow(QMainWindow, Form_0):
         # New user dialog initialization
         self.Dialog = QDialog()
         self.NewUserTool = NewUser(self)
+        self.trial_no = 0
 
 
 
@@ -144,10 +145,12 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.selectedID = self.RecordPlot.userComboBox.currentText().replace('-', ' ').split()[0]
         chdir(DATA_PATH+"users/"+self.RecordPlot.selectedID)
         proc = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
-        trial_no = str(proc.stdout.read())[2:-1].split('\\n')
+        trial_files = str(proc.stdout.read())[2:-1].split('\\n')
         # trial_no = re.split('(?:\sb\'|\\n)\s',str(proc.stdout.read()))
-        for trial_no in range(self.RecordPlot.trialComboBox.count()):
-            print(self.RecordPlot.trialComboBox.itemText(trial_no))
+        self.trial_no = len(trial_files)-1
+        # for trial_no in range(self.RecordPlot.trialComboBox.count()):
+        #     print(self.RecordPlot.trialComboBox.itemText(self.trial_no))
+            
         self.RecordPlot.userComboBox.setItemText(3, "ASD")
 
 
@@ -197,13 +200,6 @@ class MainWindow(QMainWindow, Form_0):
         self.ros_node.init_subscribers_and_publishers()
         self.start_single_roslaunch('/launch/gui.launch') # I need this to set a UUID for later added nodes
         sleep(1)
-        # I start environment related things here too cuz there is no dependency. But it can be moved somewhere later.
-        # rosrun rosserial_python serial_node.py /dev/ttyACM0
-        # try:
-        #     self.add_rosnode(pkg_name="rosserial_python", node_name="serial_node.py", name="arduino_buttons_node", args="/dev/ttyACM1")
-        # except:
-        #     print("no Arduino no started")
-        # sleep(1)
         self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
 
         self.RecordPlot.awindaButton.setEnabled(True)
@@ -215,9 +211,6 @@ class MainWindow(QMainWindow, Form_0):
 
 
     def humanCalibrate_clicked(self):
-        # self.add_rosnode(node_name="myo-rawNode.py", pkg_name="ros_myo")
-        # self.add_rosnode("world_to_myo.py", "arm_motion_controller_py3")
-        # self.add_rosnode("rviz", "rviz", args="-d $(find arm_motion_controller_py3)/launch/config/config_with_myo.rviz")
         self.human_proc = subprocess.Popen(["sh", "../sh/human.sh"]) ## this will halt the system. You will use Popen: https://stackoverflow.com/questions/16855642/execute-a-shell-script-from-python-subprocess
         sleep(1.0)
         self.myo_proc = subprocess.Popen(["sh", "../sh/myo.sh"])
@@ -334,12 +327,12 @@ class MainWindow(QMainWindow, Form_0):
             while not rospy.has_param('/robot_move_started'):
                 print("waiting for robot")
 
-            self.logging_started_flag = True
-            self.ros_node.start_time = time.time()
             chdir(DATA_PATH+'users/'+str(SELECTED_ID))
             if not self.RecordPlot.loggingcheckBox.isChecked():
-                self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
+                self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a", "-O", "U"+str(SELECTED_ID)+'t'+self.trial_no+'c'+self.ros_node.now.data+".bag"])
             self.RecordPlot.robotMoveButton.setText("Robot Stop")
+            self.logging_started_flag = True
+            self.ros_node.start_time = time.time()
         else:
             try:
                 self.urdt_proc.kill()
