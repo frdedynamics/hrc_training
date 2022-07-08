@@ -108,15 +108,7 @@ class GUInode:
             self.score_calculator()
         self.r.sleep()
 
-        # self.pub_p_hand.publish(self.p_hand)
         self.pub_score_val.publish(self.score_val)
-
-        # implement this from  DH_game for Rviz visualization
-        # try:
-        #     result = self.score_client.call_server(self.task)
-        #     print('The result is:', result)
-        # except rospy.ROSInterruptException:
-        #     print('Something went wrong:')
 
 
 ## CALLBACKS

@@ -9,11 +9,16 @@ from Classes.MarkerBasics import MarkerBasics
 ref = 'human/base'
 
 force_mode = String()
+hrc_state = String()
 score_val = Int16()
 
 def cb_force_mode(msg):
     global force_mode
     force_mode = msg
+
+def cb_hrc_state(msg):
+    global hrc_state
+    hrc_state = msg
 
 def cb_score_val(msg):
     global score_val
@@ -30,12 +35,18 @@ def main():
     listener = tf2_ros.TransformListener(tfBuffer)
 
     sub_colift_dir = rospy.Subscriber('/colift_dir', String, cb_force_mode)
+    sub_hrc_state = rospy.Subscriber('/hrc_state', String, cb_hrc_state)
     sub_score_val = rospy.Subscriber('/score_val', Int16, cb_score_val)
 
     left_arm_marker = MarkerBasics(topic_id="human/left_shoulder_", type="arm")
     right_arm_marker = MarkerBasics(topic_id="human/right_shoulder_", type="arm")
     score_marker = MarkerBasics(topic_id="score_", type="score")
     colift_dir_str_marker = MarkerBasics(topic_id="colift_dir_", type="regular_str")
+    hrc_state_str_marker = MarkerBasics(topic_id="hrc_state_", type="regular_str")
+
+    hrc_state_str_marker.change_position(0, 0, 1.6)
+    hrc_state_str_marker.change_scale(0.8, 0.8, 0.8)
+    hrc_state_str_marker.change_colour(1.0, 1.0, 1.0)
 
     force_mode.data = "s"
 
@@ -86,6 +97,7 @@ def main():
             right_arm_marker.set_invisible()
 
         score_marker.update_score_marker(score_val)
+        hrc_state_str_marker.update_str_marker(hrc_state.data)
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
         right_arm_marker.marker_objectlisher.publish(right_arm_marker.marker_object)
         score_marker.marker_objectlisher.publish(score_marker.marker_object)

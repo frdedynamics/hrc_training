@@ -99,7 +99,7 @@ class MarkerBasics(object):
             self.marker_object.id = i
             
     
-    def update_str_marker(self, text, R, G, B):
+    def update_str_marker(self, text, R=255, G=255, B=255):
 
         # R = 1.0
         # G = 0.0
