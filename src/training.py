@@ -47,15 +47,14 @@ class NewUser(QDialog, NewUserDialog):
         self.userID = randomIDcreator.main(name, height, arm_length, left_handed)
         self.IDlabel.setText(str(self.userID))
         SELECTED_ID = self.userID
-
-    def create_user_folder(self):
-        new_folder = DATA_PATH+"users/"+str(self.userID)
-        mkdir(new_folder)
-        print("New user is ready with ID number: ", self.userID)
-
-    def cancel_new_user(self):
-        # self.close
-        pass
+    
+    # def create_user_folder(self):
+    #     new_folder = DATA_PATH+"users/"+str(self.userID)
+    #     try:
+    #         mkdir(new_folder)
+    #     except FileExistsError:
+    #         pass
+    #     print("New user is ready with ID number create_user_folder: ", self.userID)
 
 
 class MainWindow(QMainWindow, Form_0):
@@ -94,7 +93,6 @@ class MainWindow(QMainWindow, Form_0):
         self.trial_no = 0
 
 
-
     def open_new_user_dialog(self):
         self.NewUserTool.setupUi(self.Dialog)
 
@@ -105,19 +103,28 @@ class MainWindow(QMainWindow, Form_0):
                                                                 self.NewUserTool.armLengthLineEdit.text(),
                                                                 self.NewUserTool.leftHandcheckBox.isChecked()))
 
-        # self.NewUserTool.buttonBox.accepted.connect(self.NewUserTool.create_user_folder)
-        self.NewUserTool.buttonBox.rejected.connect(self.Dialog.close)
-        self.Dialog.closeEvent = self.custom_closeEvent
-        self.Dialog.accepted = self.custom_accepted
+
+        # self.Dialog.closeEvent = self.custom_closeEvent
+        # self.Dialog.accepted = self.custom_accepted
+        # self.NewUserTool.buttonBox.accepted.connect(self.Dialog.accepted)
+        # self.NewUserTool.buttonBox.rejected.connect(self.Dialog.closeEvent)
+        self.NewUserTool.buttonBox.accepted.connect(self.custom_accepted)
+        self.NewUserTool.buttonBox.rejected.connect(self.custom_closeEvent)
 
         self.Dialog.show()
         self.Dialog.exec_()
 
-    def custom_closeEvent(self, event):
-        self.RecordPlot.recordtextEdit.append("New user created with ID number:  "+str(self.NewUserTool.userID))
+    def custom_closeEvent(self):
+        self.RecordPlot.recordtextEdit.append("No user created")
+        #TODO: user already exist. delete manually
 
-    def custom_accepted(self, event):
-        print("here")
+    def custom_accepted(self):
+        new_folder = DATA_PATH+"users/"+str(self.NewUserTool.userID)
+        try:
+            mkdir(new_folder)
+            self.RecordPlot.recordtextEdit.append("New user is ready with ID number: "+str(self.NewUserTool.userID))
+        except FileExistsError:
+            self.RecordPlot.recordtextEdit.append("The user is already registered:  "+str(self.NewUserTool.userID))
 
 
     def select_user(self):
@@ -128,7 +135,7 @@ class MainWindow(QMainWindow, Form_0):
         for user in str(proc.stdout.read()).split('\\n')[1:-1]:
             user_folder_info = re.split(r"\s+", user)[-4:] # ['juni', '20', '23:26', '0']
             user_info = str(user_folder_info[3]+" - "+user_folder_info[1]+user_folder_info[0]+user_folder_info[2])
-            self.RecordPlot.users_list.append(user_folder_info)
+            # self.RecordPlot.users_list.append(user_folder_info)
             self.RecordPlot.userComboBox.addItem(user_info)
 
         # Searchable combobox
