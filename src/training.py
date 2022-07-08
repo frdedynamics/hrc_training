@@ -158,7 +158,7 @@ class MainWindow(QMainWindow, Form_0):
         # for trial_no in range(self.RecordPlot.trialComboBox.count()):
         #     print(self.RecordPlot.trialComboBox.itemText(self.trial_no))
             
-        self.RecordPlot.userComboBox.setItemText(3, "ASD")
+        # self.RecordPlot.userComboBox.setItemText(3, "ASD")
 
 
 
@@ -218,9 +218,13 @@ class MainWindow(QMainWindow, Form_0):
 
 
     def humanCalibrate_clicked(self):
-        self.human_proc = subprocess.Popen(["sh", "../sh/human.sh"]) ## this will halt the system. You will use Popen: https://stackoverflow.com/questions/16855642/execute-a-shell-script-from-python-subprocess
+        chdir(self.pkg_path)
+        # proc = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
+        # print(str(proc.stdout.read()))
+        # sys.exit()
+        self.human_proc = subprocess.Popen(["sh", "sh/human.sh"]) ## this will halt the system. You will use Popen: https://stackoverflow.com/questions/16855642/execute-a-shell-script-from-python-subprocess
         sleep(1.0)
-        self.myo_proc = subprocess.Popen(["sh", "../sh/myo.sh"])
+        self.myo_proc = subprocess.Popen(["sh", "sh/myo.sh"])
 
         self.RecordPlot.emgResetButton.setEnabled(True)
         self.RecordPlot.humanInitiateButton.setEnabled(True)
@@ -330,7 +334,7 @@ class MainWindow(QMainWindow, Form_0):
     def robotMove_clicked(self):
         if not self.robotMove_clicked_flag:
             # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
-            self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/src/hrc_state_machine.py"])
+            self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine.py"])
 
             while not rospy.has_param('/robot_move_started'):
                 print("waiting for robot")
