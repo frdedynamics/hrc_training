@@ -23,7 +23,7 @@ class GUInode:
         @param rate: ROS node spin rate"""
         rospy.init_node("hrc_gui_training", anonymous=False)
         self.r = rospy.Rate(rate)
-        self.emg_sum = Int16()
+        self.emg_sum = 0
         self.emg_sum_th = 3000
         self.right_elbow_current = 0
         self.left_elbow_current = 0

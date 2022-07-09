@@ -339,6 +339,11 @@ class MainWindow(QMainWindow, Form_0):
 
             while not rospy.has_param('/robot_move_started'):
                 print("waiting for robot")
+                rospy.sleep(0.5)
+                if rospy.is_shutdown():
+                    sys.exit() 
+            
+            print("robot started")
 
             chdir(DATA_PATH+'users/'+str(SELECTED_ID))
             if not self.RecordPlot.loggingcheckBox.isChecked():
