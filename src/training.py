@@ -270,7 +270,8 @@ class MainWindow(QMainWindow, Form_0):
         # subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_to_gripper", "/world_to_myo_tf_publisher"])
         subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_sum_node", "/world_to_myo_tf_publisher"])
         sleep(2.0)
-        subprocess.Popen(["sh", "../sh/myo.sh"])
+        chdir(self.pkg_path)
+        subprocess.Popen(["sh", "sh/myo.sh"])
         self.RecordPlot.recordtextEdit.append("EMG reset DONE")
         self.RecordPlot.emgResetButton.setEnabled(True)
         # TODO: check if EMG sum is changing over time
