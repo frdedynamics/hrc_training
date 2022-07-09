@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import rospy
+import rospy, sys
 import tf2_ros
 from std_msgs.msg import String, Int16
 from geometry_msgs.msg import Pose, Quaternion
@@ -62,17 +62,32 @@ def main():
     hrc_state_str_marker.change_scale(0.8, 0.8, 0.8)
     hrc_state_str_marker.change_colour(1.0, 1.0, 1.0)
 
-    try:
-        while not rospy.has_param("/elbow_height_th"):
+    while not rospy.has_param("/elbow_height_th"):
             print("no elbow parameter set")
-            force_mode.data = "s"
             rospy.sleep(1)
-
-    except rospy.ROSInterruptException:
-        pass
-
+            if rospy.is_shutdown():
+                sys.exit()
     elbow_height_th = rospy.get_param("/elbow_height_th")
     print("ELBOW PARAM SET")
+
+    while not rospy.has_param("/robot_move_started"):
+        print("no /robot_move_started parameter set")
+        rospy.sleep(1)
+        if rospy.is_shutdown():
+                sys.exit()
+
+    print("/robot_move_started SET")
+
+    while not rospy.has_param("/colift_set"):
+        print("no /colift_set parameter set")
+        force_mode.data = "u"
+        rospy.sleep(1)
+        if rospy.is_shutdown():
+                sys.exit()
+
+    print("/colift_set SET")
+
+    
 
     while not rospy.is_shutdown():
         try:
@@ -102,12 +117,12 @@ def main():
                 right_arm_marker.set_visible()
                 right_arm_marker.change_colour(R=0, G=0, B=255)
                 colift_dir_str_marker.update_str_marker("DOWN", R=0, G=0, B=255)
-                print("RIGH")
+                print("DOWN")
             else: # force_mode.data = "d"
                 left_arm_marker.set_visible(transparancy=0.2)
                 right_arm_marker.set_visible(transparancy=0.2)            
                 colift_dir_str_marker.update_str_marker("STOP", R=0, G=0, B=0)
-                print("DOWN")
+                print("STOP")
 
         elif((elbow_left_height > elbow_height_th) and (elbow_right_height > elbow_height_th)):
             left_arm_marker.set_visible()
