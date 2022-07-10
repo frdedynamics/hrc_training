@@ -22,7 +22,7 @@ import Classes.randomIDcreator as randomIDcreator
 import roslaunch
 import subprocess, time, datetime
 from pathlib import Path
-from os import popen, chdir, mkdir
+from os import popen, chdir, mkdir, getcwd
 
 import rospy
 
@@ -120,6 +120,7 @@ class MainWindow(QMainWindow, Form_0):
 
     def custom_accepted(self):
         new_folder = DATA_PATH+"users/"+str(self.NewUserTool.userID)
+        SELECTED_ID = self.NewUserTool.userID
         try:
             mkdir(new_folder)
             self.RecordPlot.recordtextEdit.append("New user is ready with ID number: "+str(self.NewUserTool.userID))
@@ -175,7 +176,7 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.measureTresholdButton.setEnabled(False)
         self.RecordPlot.setTresholdButton.setEnabled(False)
         self.RecordPlot.gripperInitiateButton.setEnabled(False)
-        self.RecordPlot.robotMoveButton.setEnabled(False)
+        self.RecordPlot.robotMoveButton.setEnabled(True)
 
         self.RecordPlot.roscoreButton.clicked.connect(self.roscore_clicked)
         self.RecordPlot.awindaButton.clicked.connect(self.awinda_clicked)
@@ -335,17 +336,21 @@ class MainWindow(QMainWindow, Form_0):
     def robotMove_clicked(self):
         if not self.robotMove_clicked_flag:
             # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
-            self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine.py"])
+            # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine.py"])
 
-            while not rospy.has_param('/robot_move_started'):
-                print("waiting for robot")
-                rospy.sleep(0.5)
-                if rospy.is_shutdown():
-                    sys.exit() 
+            # while not rospy.has_param('/robot_move_started'):
+            #     print("waiting for robot")
+            #     rospy.sleep(0.5)
+            #     if rospy.is_shutdown():
+            #         sys.exit() 
             
-            print("robot started")
+            # print("robot started")
 
-            chdir(DATA_PATH+'users/'+str(SELECTED_ID))
+            print("ID: ", self.NewUserTool.userID)
+            print("trial", self.trial_no)
+
+            chdir(DATA_PATH+'users/'+str(self.NewUserTool.userID))
+            print(getcwd())
             if not self.RecordPlot.loggingcheckBox.isChecked():
                 # self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a", "-O", "U"+str(SELECTED_ID)+'t'+self.trial_no+'c'+self.ros_node.now.data+".bag"])
                 self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
