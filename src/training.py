@@ -34,6 +34,10 @@ SELECTED_ID = 0
 class RecordPlotWindow(QWidget, Form_0):
     def __init__(self, parent=None):
         super(RecordPlotWindow, self).__init__(parent)
+
+        self.trial_no = 0
+        self.selectedID = 0
+        self.users_list = []
         self.setupUi(self)
 
 
@@ -90,7 +94,6 @@ class MainWindow(QMainWindow, Form_0):
         # New user dialog initialization
         self.Dialog = QDialog()
         self.NewUserTool = NewUser(self)
-        self.trial_no = 0
 
 
     def open_new_user_dialog(self):
@@ -148,6 +151,7 @@ class MainWindow(QMainWindow, Form_0):
 
         # print(self.RecordPlot.userComboBox.currentText())
         self.RecordPlot.userComboBox.currentTextChanged.connect(self.user_combo_changed)
+        self.RecordPlot.trialComboBox.currentTextChanged.connect(self.trial_combo_changed)
     
     def user_combo_changed(self):
         self.RecordPlot.selectedID = self.RecordPlot.userComboBox.currentText().replace('-', ' ').split()[0]
@@ -160,7 +164,12 @@ class MainWindow(QMainWindow, Form_0):
         #     print(self.RecordPlot.trialComboBox.itemText(self.trial_no))
             
         # self.RecordPlot.userComboBox.setItemText(3, "ASD")
+        self.RecordPlot.trialComboBox.setEnabled(True)
 
+    def trial_combo_changed(self):
+        self.RecordPlot.trial_no = self.RecordPlot.trialComboBox.currentText()
+        self.RecordPlot.recordtextEdit.append("User no:"+str(self.RecordPlot.selectedID)+" trial no: "+str(self.RecordPlot.trial_no))
+        self.RecordPlot.humanCalibrateButton.setEnabled(True)
 
 
     def startRecordPlotWindow(self):
@@ -176,7 +185,8 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.measureTresholdButton.setEnabled(False)
         self.RecordPlot.setTresholdButton.setEnabled(False)
         self.RecordPlot.gripperInitiateButton.setEnabled(False)
-        self.RecordPlot.robotMoveButton.setEnabled(True)
+        self.RecordPlot.robotMoveButton.setEnabled(False)
+        self.RecordPlot.trialComboBox.setEnabled(False)
 
         self.RecordPlot.roscoreButton.clicked.connect(self.roscore_clicked)
         self.RecordPlot.awindaButton.clicked.connect(self.awinda_clicked)
@@ -215,7 +225,7 @@ class MainWindow(QMainWindow, Form_0):
 
     def awinda_clicked(self):
         self.add_rosnode("awindamonitor", "awindamonitor", "awindamonitor")
-        self.RecordPlot.humanCalibrateButton.setEnabled(True)
+        # self.RecordPlot.humanCalibrateButton.setEnabled(True)
 
 
     def humanCalibrate_clicked(self):
@@ -346,14 +356,17 @@ class MainWindow(QMainWindow, Form_0):
             
             # print("robot started")
 
-            print("ID: ", self.NewUserTool.userID)
-            print("trial", self.trial_no)
+            print(self.RecordPlot.selectedID)
+            print(self.RecordPlot.trial_no)
 
-            chdir(DATA_PATH+'users/'+str(self.NewUserTool.userID))
+            chdir(DATA_PATH+'users/'+str(self.RecordPlot.selectedID))
             print(getcwd())
             if not self.RecordPlot.loggingcheckBox.isChecked():
                 # self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a", "-O", "U"+str(SELECTED_ID)+'t'+self.trial_no+'c'+self.ros_node.now.data+".bag"])
+                subprocess.Popen(["rosparam", "dump", str(self.ros_node.now.data)+'-'+str(self.RecordPlot.selectedID)+'-'+str(self.RecordPlot.trial_no)+'.yaml'])
                 self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
+                rospy.sleep(2)
+                sys.exit()
             self.RecordPlot.robotMoveButton.setText("Robot Stop")
             self.logging_started_flag = True
             self.ros_node.start_time = time.time()
