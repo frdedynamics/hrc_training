@@ -74,30 +74,35 @@ def main():
     tcp_force_marker.change_colour(1.0, 1.0, 1.0)
     tcp_force_marker.update_str_marker('*  *')
 
-    # while not rospy.has_param("/elbow_height_th"):
-    #         print("no elbow parameter set")
-    #         rospy.sleep(1)
-    #         if rospy.is_shutdown():
-    #             sys.exit()
-    # elbow_height_th = rospy.get_param("/elbow_height_th")
-    # print("ELBOW PARAM SET")
+    while not rospy.has_param("/elbow_height_th"):
+            print("no elbow parameter set")
+            rospy.sleep(1)
+            if rospy.is_shutdown():
+                sys.exit()
+    elbow_height_th = rospy.get_param("/elbow_height_th")
+    print("ELBOW PARAM SET")
 
-    # while not rospy.has_param("/robot_move_started"):
-    #     print("no /robot_move_started parameter set")
-    #     rospy.sleep(1)
-    #     if rospy.is_shutdown():
-    #             sys.exit()
+    while not rospy.has_param("/robot_move_started"):
+        print("no /robot_move_started parameter set")
+        rospy.sleep(1)
+        if rospy.is_shutdown():
+                sys.exit()
 
-    # print("/robot_move_started SET")
+    print("/robot_move_started SET")
 
-    # while not rospy.has_param("/colift_set"):
-    #     print("no /colift_set parameter set")
-    #     force_mode.data = "u"
-    #     rospy.sleep(1)
-    #     if rospy.is_shutdown():
-    #             sys.exit()
+    while not rospy.has_param("/colift_set"):
+        print("no /colift_set parameter set")
+        force_mode.data = "u"
+        rospy.sleep(0.5)
+        ## But the game has started so score marker and hrc marker should be active
+        score_marker.update_score_marker(score_val)
+        score_marker.marker_objectlisher.publish(score_marker.marker_object)
+        hrc_state_str_marker.update_str_marker(hrc_state.data)
+        hrc_state_str_marker.marker_objectlisher.publish(hrc_state_str_marker.marker_object)
+        if rospy.is_shutdown():
+                sys.exit()
 
-    # print("/colift_set SET")
+    print("/colift_set SET")
 
     
 
@@ -159,12 +164,12 @@ def main():
         
 
         score_marker.update_score_marker(score_val)
+        score_marker.marker_objectlisher.publish(score_marker.marker_object)
         hrc_state_str_marker.update_str_marker(hrc_state.data)
         hrc_state_str_marker.marker_objectlisher.publish(hrc_state_str_marker.marker_object)
         tcp_force_marker.marker_objectlisher.publish(tcp_force_marker.marker_object)
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
         right_arm_marker.marker_objectlisher.publish(right_arm_marker.marker_object)
-        score_marker.marker_objectlisher.publish(score_marker.marker_object)
         colift_dir_str_marker.marker_objectlisher.publish(colift_dir_str_marker.marker_object)
         rate.sleep()
 
