@@ -70,10 +70,9 @@ def main():
     hrc_state_str_marker.change_scale(0.8, 0.8, 0.8)
     hrc_state_str_marker.change_colour(1.0, 1.0, 1.0)
 
-    tcp_force_marker.change_position(0, 0, -0.2)
-    tcp_force_marker.change_scale(5.0, 5.0, 5.0)
+    tcp_force_marker.change_scale(1.0, 1.0, 1.0)
     tcp_force_marker.change_colour(1.0, 1.0, 1.0)
-    tcp_force_marker.update_str_marker('0')
+    tcp_force_marker.update_str_marker('* *')
 
     # while not rospy.has_param("/elbow_height_th"):
     #         print("no elbow parameter set")
@@ -104,11 +103,10 @@ def main():
 
     while not rospy.is_shutdown():
         
-        tcp_force_marker.set_visible(tcp_force.data[1]/30.0)
         if abs(tcp_force.data[1]) > 20:
             tcp_force_marker.change_colour(0.0, 1.0, 0.0)
         else:
-            tcp_force_marker.change_colour(1.0, 1.0, 1.0)
+            tcp_force_marker.change_colour(1.0, 1.0, 1.0, a=abs(tcp_force.data[1]/50.0))
 
         try:
             left_shoulder_trans = tfBuffer.lookup_transform(ref, 'human/left_shoulder', rospy.Time())

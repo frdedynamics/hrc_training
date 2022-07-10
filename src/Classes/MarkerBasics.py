@@ -154,7 +154,7 @@ class MarkerBasics(object):
         self.marker_object.color.a = 0.0
 
 
-    def change_colour(self, R, G, B):
+    def change_colour(self, R, G, B, a=1.0):
         """
         All colours go from [0.0,1.0].
         :param R:
@@ -167,7 +167,7 @@ class MarkerBasics(object):
         self.marker_object.color.g = G
         self.marker_object.color.b = B
         # This has to be, otherwise it will be transparent
-        self.marker_object.color.a = 1.0
+        self.marker_object.color.a = a
 
 
     def change_scale(self, s_x=1.0, s_y=0.1, s_z=0.1):
