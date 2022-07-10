@@ -72,7 +72,7 @@ def main():
 
     tcp_force_marker.change_scale(1.0, 1.0, 1.0)
     tcp_force_marker.change_colour(1.0, 1.0, 1.0)
-    tcp_force_marker.update_str_marker('* *')
+    tcp_force_marker.update_str_marker('*  *')
 
     # while not rospy.has_param("/elbow_height_th"):
     #         print("no elbow parameter set")
@@ -126,45 +126,37 @@ def main():
         print("elbow_right_height: ", elbow_right_height)
         print("force_mode: ", force_mode.data)
         print("elbow_height_th: ", elbow_height_th)
-        
 
-        if(elbow_left_height < elbow_height_th) and (elbow_right_height < elbow_height_th):
-            if(force_mode.data == "s"):
-                left_arm_marker.set_visible()
-                left_arm_marker.change_colour(R=0, G=0, B=255)
-                right_arm_marker.set_visible()
-                right_arm_marker.change_colour(R=0, G=0, B=255)
-                colift_dir_str_marker.update_str_marker("DOWN", R=0, G=0, B=255)
-                print("DOWN")
-            else: # force_mode.data = "d"
-                left_arm_marker.set_visible(transparancy=0.2)
-                right_arm_marker.set_visible(transparancy=0.2)            
-                colift_dir_str_marker.update_str_marker("STOP", R=0, G=0, B=0)
-                print("STOP")
-
-        elif((elbow_left_height > elbow_height_th) and (elbow_right_height > elbow_height_th)):
-            left_arm_marker.set_visible()
-            left_arm_marker.change_colour(R=0, G=255, B=0)
-            right_arm_marker.set_visible()
-            right_arm_marker.change_colour(R=0, G=255, B=0)
-            colift_dir_str_marker.update_str_marker("UP", R=0, G=255, B=0)
-            print("UP")
-        elif((elbow_left_height > elbow_height_th) and (elbow_right_height < elbow_height_th)):
-            left_arm_marker.set_visible()
-            left_arm_marker.change_colour(R=0, G=255, B=0)
-            right_arm_marker.set_invisible()
-            colift_dir_str_marker.update_str_marker("LEFT", R=0, G=255, B=0)
-            print("LEFT")
-        elif((elbow_right_height > elbow_height_th) and (elbow_left_height < elbow_height_th)):
-            left_arm_marker.set_invisible()
-            right_arm_marker.set_visible()
-            right_arm_marker.change_colour(R=0, G=255, B=0)
-            colift_dir_str_marker.update_str_marker("RIGHT", R=0, G=255, B=0)
-            print("RIGHT")
+        if (force_mode.data == "s" and tcp_force.data[1] < 0):
+            if((elbow_right_height > elbow_height_th) and (elbow_left_height < elbow_height_th)):
+                left_arm_marker.set_invisible()
+                right_arm_marker.change_colour(R=0, G=255, B=0)
+                colift_dir_str_marker.update_str_marker("RIGHT", R=0, G=255, B=0)
+                print("RIGHT")
+            elif((elbow_left_height > elbow_height_th) and (elbow_right_height < elbow_height_th)):
+                force_mode.data = "l"
+                left_arm_marker.change_colour(R=0, G=255, B=0)
+                right_arm_marker.set_invisible()
+                colift_dir_str_marker.update_str_marker("LEFT", R=0, G=255, B=0)
+                print("LEFT")
+            elif((elbow_left_height > elbow_height_th) and (elbow_right_height > elbow_height_th)):
+                left_arm_marker.change_colour(R=0, G=255, B=0)
+                right_arm_marker.change_colour(R=0, G=255, B=0)
+                colift_dir_str_marker.update_str_marker("UP", R=0, G=255, B=0)
+                print("UP")
+            else:
+                print("Something wrong colift 1: ", force_mode.data, '--', tcp_force.data[1])
+        elif (force_mode.data == "s" and tcp_force.data[1] > 0):
+            left_arm_marker.change_colour(R=0, G=0, B=255)
+            right_arm_marker.change_colour(R=0, G=0, B=255)
+            colift_dir_str_marker.update_str_marker("DOWN", R=0, G=0, B=255)
+            print("DOWN")
         else:
-            print("No force mode")
-            left_arm_marker.set_invisible()
-            right_arm_marker.set_invisible()
+            left_arm_marker.change_colour(R=255, G=0, B=255,a=0.2)
+            right_arm_marker.change_colour(R=255, G=0, B=255, a=0.2)            
+            colift_dir_str_marker.update_str_marker("STOP", R=0, G=0, B=0)
+            print("STOP")
+        
 
         score_marker.update_score_marker(score_val)
         hrc_state_str_marker.update_str_marker(hrc_state.data)
