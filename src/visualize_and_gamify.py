@@ -150,6 +150,7 @@ def main():
 
         score_marker.update_score_marker(score_val)
         hrc_state_str_marker.update_str_marker(hrc_state.data)
+        hrc_state_str_marker.marker_objectlisher.publish(hrc_state_str_marker.marker_object)
         left_arm_marker.marker_objectlisher.publish(left_arm_marker.marker_object)
         right_arm_marker.marker_objectlisher.publish(right_arm_marker.marker_object)
         score_marker.marker_objectlisher.publish(score_marker.marker_object)
