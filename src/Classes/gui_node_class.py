@@ -89,13 +89,13 @@ class GUInode:
         self.score_val.data = _INIT_SCORE - elapsed
 
         # +60 each button
-        if not self.button1_flag:
+        if self.button1_flag:
             self.score_val.data += 60
             try:
                 self.registered_buttons.remove("button1")
             except ValueError:
                 pass
-        if not self.button2_flag:
+        if self.button2_flag:
             self.score_val.data += 60
             try:
                 self.registered_buttons.remove("button2")
@@ -129,11 +129,11 @@ class GUInode:
         self.left_elbow_current = msg.position.y
 
     def button1_cb(self, msg):
-        if msg.data > 0:
+        if msg.data < 0:
             self.button1_flag = True
 
     def button2_cb(self, msg):
-        if msg.data > 0:
+        if msg.data < 0:
             self.button2_flag = True
 
     def game_over_flag_cb(self, msg):
