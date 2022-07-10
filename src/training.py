@@ -346,18 +346,15 @@ class MainWindow(QMainWindow, Form_0):
     def robotMove_clicked(self):
         if not self.robotMove_clicked_flag:
             # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
-            # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine.py"])
+            self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine.py"])
 
-            # while not rospy.has_param('/robot_move_started'):
-            #     print("waiting for robot")
-            #     rospy.sleep(0.5)
-            #     if rospy.is_shutdown():
-            #         sys.exit() 
+            while not rospy.has_param('/robot_move_started'):
+                print("waiting for robot")
+                rospy.sleep(0.5)
+                if rospy.is_shutdown():
+                    sys.exit() 
             
-            # print("robot started")
-
-            print(self.RecordPlot.selectedID)
-            print(self.RecordPlot.trial_no)
+            print("robot started")
 
             chdir(DATA_PATH+'users/'+str(self.RecordPlot.selectedID))
             print(getcwd())
@@ -365,8 +362,6 @@ class MainWindow(QMainWindow, Form_0):
                 # self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a", "-O", "U"+str(SELECTED_ID)+'t'+self.trial_no+'c'+self.ros_node.now.data+".bag"])
                 subprocess.Popen(["rosparam", "dump", str(self.ros_node.now.data)+'-'+str(self.RecordPlot.selectedID)+'-'+str(self.RecordPlot.trial_no)+'.yaml'])
                 self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
-                rospy.sleep(2)
-                sys.exit()
             self.RecordPlot.robotMoveButton.setText("Robot Stop")
             self.logging_started_flag = True
             self.ros_node.start_time = time.time()

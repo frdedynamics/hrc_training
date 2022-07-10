@@ -32,8 +32,8 @@ class GUInode:
         self.score_val.data = _INIT_SCORE
         self.start_time = 0
         self.stop_time = 0 
-        self.button1_flag = 0
-        self.button2_flag = 0
+        self.button1_flag = False
+        self.button2_flag = False
         self.registered_buttons = ["button1", "button2"]
         self.game_over_flag = Bool()
         self.game_over_flag.data = False
@@ -129,11 +129,11 @@ class GUInode:
         self.left_elbow_current = msg.position.y
 
     def button1_cb(self, msg):
-        if msg.data < 0:
+        if msg.data == 0:
             self.button1_flag = True
 
     def button2_cb(self, msg):
-        if msg.data < 0:
+        if msg.data == 0:
             self.button2_flag = True
 
     def game_over_flag_cb(self, msg):
