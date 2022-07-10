@@ -89,13 +89,13 @@ class GUInode:
         self.score_val.data = _INIT_SCORE - elapsed
 
         # +60 each button
-        if self.button1_flag:
+        if not self.button1_flag:
             self.score_val.data += 60
             try:
                 self.registered_buttons.remove("button1")
             except ValueError:
                 pass
-        if self.button2_flag:
+        if not self.button2_flag:
             self.score_val.data += 60
             try:
                 self.registered_buttons.remove("button2")
