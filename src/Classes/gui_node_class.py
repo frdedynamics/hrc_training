@@ -39,6 +39,10 @@ class GUInode:
         self.game_over_flag.data = False
         self.now = String()
         self.now.data = str(datetime.datetime.now())
+    
+    # Deleting (Calling destructor)
+    def __del__(self):
+        print('Destructor called, rosnode deleted.')
         
 
     def init_subscribers_and_publishers(self):

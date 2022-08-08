@@ -369,6 +369,12 @@ class MainWindow(QMainWindow, Form_0):
             try:
                 self.urdt_proc.kill()
                 self.rosbag_proc.kill()
+                if rospy.has_param('/robot_move_started'):
+                    rospy.delete_param('/robot_move_started')
+                # del self.ros_node 
+                # self.ros_node = GUInode()
+                # self.ros_node.init_subscribers_and_publishers()
+                self.ros_node.__init__()
             except AttributeError as e:
                 pass
             self.RecordPlot.robotMoveButton.setText("Robot Move")
