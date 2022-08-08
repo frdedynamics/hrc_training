@@ -20,6 +20,7 @@ from Classes.new_user import Ui_Dialog as NewUserDialog
 import Classes.randomIDcreator as randomIDcreator
 
 import roslaunch
+import signal
 import subprocess, time, datetime
 from pathlib import Path
 from os import popen, chdir, mkdir, getcwd
@@ -367,8 +368,13 @@ class MainWindow(QMainWindow, Form_0):
             self.ros_node.start_time = time.time()
         else:
             try:
-                self.urdt_proc.kill()
-                self.rosbag_proc.kill()
+                self.urdt_proc.send_signal(signal.SIGINT)
+                self.rosbag_proc.send_signal(signal.SIGINT)
+                print("killed processes")
+                # self.urdt_proc.kill()
+                # self.rosbag_proc.kill()
+                del self.urdt_proc
+                del self.rosbag_proc
                 if rospy.has_param('/robot_move_started'):
                     rospy.delete_param('/robot_move_started')
                 # del self.ros_node 
@@ -395,11 +401,17 @@ class MainWindow(QMainWindow, Form_0):
 
     def stop_all_roslaunch(self):
         try:
-            self.human_proc.kill()
-            self.myo_proc.kill()
-            self.urdt_proc.kill()
-            self.gripper_proc.kill()
-            self.rosbag_proc.kill()
+            # self.human_proc.kill()
+            # self.myo_proc.kill()
+            # self.urdt_proc.kill()
+            # self.gripper_proc.kill()
+            # self.rosbag_proc.kill()
+
+            self.human_proc.send_signal(signal.SIGINT)
+            self.myo_proc.send_signal(signal.SIGINT)
+            self.urdt_proc.send_signal(signal.SIGINT)
+            self.gripper_proc.send_signal(signal.SIGINT)
+            self.rosbag_proc.send_signal(signal.SIGINT)
         except AttributeError as e:
             pass
         p_kill1 = subprocess.Popen(["rosnode", "kill", "-a"]) # not sure if I need a return object. Keep it for now
