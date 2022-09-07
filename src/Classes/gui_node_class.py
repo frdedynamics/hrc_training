@@ -39,6 +39,8 @@ class GUInode:
         self.game_over_flag.data = False
         self.now = String()
         self.now.data = str(datetime.datetime.now())
+        self.userid = 0
+        self.trial_no = 0
     
     # Deleting (Calling destructor)
     def __del__(self):
@@ -71,9 +73,11 @@ class GUInode:
         # Merged hands 2 -- to be used in colift state
 
 
-    def set_params(self, emg_sum_th=3000, elbow_height_th=0.2):
+    def set_params(self, emg_sum_th=3000, elbow_height_th=0.2, user_id=0, trial_no=0):
         self.emg_sum_th = rospy.set_param('/emg_sum_th', emg_sum_th)
         self.elbow_height_th = rospy.set_param('/elbow_height_th', elbow_height_th)
+        self.userid = rospy.set_param('/userID', user_id)
+        self.trial_no = rospy.set_param('/userID', trial_no)
 
 
     def data_logger_enabler(self):

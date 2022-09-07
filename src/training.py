@@ -323,7 +323,7 @@ class MainWindow(QMainWindow, Form_0):
         if(len(self.RecordPlot.elbowTresholdLineEdit.text())>0 and len(self.RecordPlot.emgTresholdLineEdit.text())>0):
             elbow_th = float(self.RecordPlot.elbowTresholdLineEdit.text())
             emg_th = int(self.RecordPlot.emgTresholdLineEdit.text())
-            self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th)
+            self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th, user_id=self.RecordPlot.selectedID, trial_no=self.RecordPlot.trial_no)
 
             self.RecordPlot.gripperInitiateButton.setEnabled(True)
         else:
