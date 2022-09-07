@@ -46,7 +46,7 @@ def cb_score_val(msg):
 
 def main():
     global elbow_right_height, elbow_left_height, elbow_height_th, tcp_force
-    rospy.init_node('rviz_markers', anonymous=True)
+    rospy.init_node('rviz_markers', anonymous=False)
     rate = rospy.Rate(100)
 
     tfBuffer = tf2_ros.Buffer()
