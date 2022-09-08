@@ -77,7 +77,7 @@ class GUInode:
         self.emg_sum_th = rospy.set_param('/emg_sum_th', emg_sum_th)
         self.elbow_height_th = rospy.set_param('/elbow_height_th', elbow_height_th)
         self.userid = rospy.set_param('/userID', user_id)
-        self.trial_no = rospy.set_param('/userID', trial_no)
+        self.trial_no = rospy.set_param('/trialNO', trial_no)
 
 
     def data_logger_enabler(self):

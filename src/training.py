@@ -71,6 +71,7 @@ class MainWindow(QMainWindow, Form_0):
         self.launch = roslaunch.scriptapi.ROSLaunch()
 
         self.ros_node = GUInode()
+        
         self.rosTimer=QTimer()
         self.guiTimer=QTimer()
         self.thresholdsTimer=QTimer()
@@ -347,7 +348,7 @@ class MainWindow(QMainWindow, Form_0):
     def robotMove_clicked(self):
         if not self.robotMove_clicked_flag:
             # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
-            self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine.py"])
+            self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine_restartable.py"])
 
             while not rospy.has_param('/robot_move_started'):
                 print("waiting for robot")
@@ -360,9 +361,11 @@ class MainWindow(QMainWindow, Form_0):
             chdir(DATA_PATH+'users/'+str(self.RecordPlot.selectedID))
             print(getcwd())
             if not self.RecordPlot.loggingcheckBox.isChecked():
-                # self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a", "-O", "U"+str(SELECTED_ID)+'t'+self.trial_no+'c'+self.ros_node.now.data+".bag"])
-                subprocess.Popen(["rosparam", "dump", str(self.ros_node.now.data)+'-'+str(self.RecordPlot.selectedID)+'-'+str(self.RecordPlot.trial_no)+'.yaml'])
-                self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a"])
+                now_str = str(self.ros_node.now.data).replace(' ', '_').replace('.','_').replace(':', '_').replace('-', '_')
+                print(now_str, "rosbag starting")
+                subprocess.Popen(["rosparam", "dump", now_str+'-'+str(self.RecordPlot.selectedID)+'-'+str(self.RecordPlot.trial_no)+'.yaml'])
+                self.rosbag_proc = subprocess.Popen(["rosbag", "record", "-a", "-O", now_str+"_"+str(self.RecordPlot.selectedID)+"_"+self.RecordPlot.trial_no])
+
             self.RecordPlot.robotMoveButton.setText("Robot Stop")
             self.logging_started_flag = True
             self.ros_node.start_time = time.time()
@@ -381,6 +384,7 @@ class MainWindow(QMainWindow, Form_0):
                 # self.ros_node = GUInode()
                 # self.ros_node.init_subscribers_and_publishers()
                 self.ros_node.__init__()
+                self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
             except AttributeError as e:
                 pass
             self.RecordPlot.robotMoveButton.setText("Robot Move")
