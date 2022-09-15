@@ -158,7 +158,7 @@
       <x>290</x>
       <y>190</y>
       <width>211</width>
-      <height>161</height>
+      <height>101</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -171,7 +171,7 @@
      <property name="geometry">
       <rect>
        <x>50</x>
-       <y>130</y>
+       <y>70</y>
        <width>89</width>
        <height>25</height>
       </rect>
@@ -424,7 +424,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>370</y>
+      <y>400</y>
       <width>151</width>
       <height>41</height>
      </rect>
@@ -437,7 +437,7 @@
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>370</y>
+      <y>400</y>
       <width>161</width>
       <height>41</height>
      </rect>
@@ -484,6 +484,96 @@
      <string>MUSCLES</string>
     </property>
    </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>300</y>
+      <width>211</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLineEdit" name="robotForceLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>30</y>
+       <width>81</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>15</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="robotForceLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Colift Force:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="robotspeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Release Speed:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="robotSpeedLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>60</y>
+       <width>81</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0.25</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>111</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>ROBOT SPEED</string>
+     </property>
+    </widget>
+   </widget>
    <zorder>emg_frame</zorder>
    <zorder>joint_frame</zorder>
    <zorder>loggingcheckBox</zorder>
@@ -506,6 +596,7 @@
    <zorder>setTresholdButton</zorder>
    <zorder>label_2</zorder>
    <zorder>label_3</zorder>
+   <zorder>groupBox</zorder>
   </widget>
   <widget class="QGroupBox" name="plotgroupBox">
    <property name="geometry">

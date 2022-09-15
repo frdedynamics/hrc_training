@@ -71,6 +71,7 @@ class MainWindow(QMainWindow, Form_0):
         self.launch = roslaunch.scriptapi.ROSLaunch()
 
         self.ros_node = GUInode()
+
         
         self.rosTimer=QTimer()
         self.guiTimer=QTimer()
@@ -205,6 +206,9 @@ class MainWindow(QMainWindow, Form_0):
 
         self.RecordPlot.trialComboBox.addItems([str(x) for x in range(1,11)])
         # self.RecordPlot.userComboBox.setItemData(0, QFont('Verdana'), Qt.FontRole) ## TODO maybe
+
+        self.RecordPlot.robotForceLineEdit.setToolTip("13 - 40")
+        self.RecordPlot.robotSpeedLineEdit.setToolTip("0.1 - 0.8")
         
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC TRAINING GAME!")
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
@@ -320,9 +324,11 @@ class MainWindow(QMainWindow, Form_0):
 
         # TODO: set elbow_height_th, emg_sum, hand_dominance parameters
         if(len(self.RecordPlot.elbowTresholdLineEdit.text())>0 and len(self.RecordPlot.emgTresholdLineEdit.text())>0):
+            colift_force = int(self.RecordPlot.robotForceLineEdit.text())
+            release_speed = float(self.RecordPlot.robotSpeedLineEdit.text())
             elbow_th = float(self.RecordPlot.elbowTresholdLineEdit.text())
             emg_th = int(self.RecordPlot.emgTresholdLineEdit.text())
-            self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th, user_id=self.RecordPlot.selectedID, trial_no=self.RecordPlot.trial_no)
+            self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th, user_id=self.RecordPlot.selectedID, trial_no=self.RecordPlot.trial_no, colift_force=colift_force, release_speed=release_speed)
 
             self.RecordPlot.gripperInitiateButton.setEnabled(True)
         else:
