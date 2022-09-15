@@ -378,8 +378,17 @@ class MainWindow(QMainWindow, Form_0):
                 # self.rosbag_proc.kill()
                 del self.urdt_proc
                 del self.rosbag_proc
+                # subprocess.Popen(["rosnode", "kill", "/visualize_and_gamify"])
                 if rospy.has_param('/robot_move_started'):
-                    rospy.delete_param('/robot_move_started')
+                    rospy.set_param('/robot_move_started', False)
+                if rospy.has_param('/colift_set'):
+                    rospy.delete_param('/colift_set')
+                if rospy.has_param('/elbow_height_th'):
+                    rospy.delete_param('/elbow_height_th')
+                if rospy.has_param('/emg_sum_th'):
+                    rospy.delete_param('/emg_sum_th')
+
+                # subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_sum_node", "/world_to_myo_tf_publisher"])
                 # del self.ros_node 
                 # self.ros_node = GUInode()
                 # self.ros_node.init_subscribers_and_publishers()

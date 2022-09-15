@@ -157,12 +157,13 @@ def main():
             left_arm_marker.change_colour(R=255, G=0, B=255, a=0.2)
             right_arm_marker.change_colour(R=255, G=0, B=255, a=0.2)
 
-        if not rospy.get_param('/robot_move_started'):
-            score_marker.set_invisible()
-            tcp_force_marker.set_invisible()
-            left_arm_marker.set_invisible()
-            right_arm_marker.set_invisible()
-            colift_dir_str_marker.set_invisible()
+        if rospy.has_param('/robot_move_started'):
+            if not rospy.get_param('/robot_move_started'):
+                score_marker.set_invisible()
+                tcp_force_marker.set_invisible()
+                left_arm_marker.set_invisible()
+                right_arm_marker.set_invisible()
+                colift_dir_str_marker.set_invisible()
         
         score_marker.update_score_marker(score_val)
         score_marker.marker_objectlisher.publish(score_marker.marker_object)
