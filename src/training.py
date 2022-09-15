@@ -20,7 +20,7 @@ from Classes.new_user import Ui_Dialog as NewUserDialog
 import Classes.randomIDcreator as randomIDcreator
 
 import roslaunch
-import signal
+import signal, logging
 import subprocess, time, datetime
 from pathlib import Path
 from os import popen, chdir, mkdir, getcwd
@@ -368,34 +368,32 @@ class MainWindow(QMainWindow, Form_0):
             self.logging_started_flag = True
             self.ros_node.start_time = time.time()
         else:
+            print("before buttons:", self.ros_node.registered_buttons)
+            print("before score:", self.ros_node.score_val)
+            self.ros_node.reset()
+            self.ros_node.update()
+            print("after buttons:", self.ros_node.registered_buttons)
+            print("after score:", self.ros_node.score_val)
             try:
                 self.urdt_proc.send_signal(signal.SIGINT)
                 self.rosbag_proc.send_signal(signal.SIGINT)
                 print("killed processes")
-                # self.urdt_proc.kill()
-                # self.rosbag_proc.kill()
                 del self.urdt_proc
                 del self.rosbag_proc
-                # subprocess.Popen(["rosnode", "kill", "/visualize_and_gamify"])
-                if rospy.has_param('/robot_move_started'):
-                    rospy.set_param('/robot_move_started', False)
-                if rospy.has_param('/colift_set'):
-                    rospy.set_param('/colift_set', False)
-                if rospy.has_param('/elbow_height_th'):
-                    rospy.delete_param('/elbow_height_th')
-                if rospy.has_param('/emg_sum_th'):
-                    rospy.delete_param('/emg_sum_th')
+            except Exception as e: 
+                logging.exception("An exception was thrown!")
 
-                # subprocess.Popen(["rosnode", "kill", "/myo_raw", "/emg_sum_node", "/world_to_myo_tf_publisher"])
-                # del self.ros_node 
-                # self.ros_node = GUInode()
-                # self.ros_node.init_subscribers_and_publishers()
-                self.ros_node.reset()
-                self.ros_node.update()
-                # self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
-            except AttributeError as e:
-                pass
+            # subprocess.Popen(["rosnode", "kill", "/visualize_and_gamify"])
+            if rospy.has_param('/robot_move_started'):
+                rospy.set_param('/robot_move_started', False)
+            if rospy.has_param('/colift_set'):
+                rospy.set_param('/colift_set', False)
+            if rospy.has_param('/elbow_height_th'):
+                rospy.delete_param('/elbow_height_th')
+            if rospy.has_param('/emg_sum_th'):
+                rospy.delete_param('/emg_sum_th')
             self.RecordPlot.robotMoveButton.setText("Robot Move")
+
         self.robotMove_clicked_flag = not self.robotMove_clicked_flag
 
 
