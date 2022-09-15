@@ -4,7 +4,7 @@
 <launch>
     <rosparam command="load" param="gui_start_flag" />
     <!-- <node pkg="hrc_training" name="gui_node" type="gui_node.py"/> -->
-    <node name="arduino_node" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM1" respawn="true" />
+    <node name="arduino_node" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM1" respawn="false" />
 
 </launch>
 
