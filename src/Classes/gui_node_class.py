@@ -91,12 +91,13 @@ class GUInode:
         # Merged hands 2 -- to be used in colift state
 
 
-    def set_params(self, emg_sum_th=3000, elbow_height_th=0.2, user_id=0, trial_no=0, colift_force=15, release_speed=0.25):
-        print("params:", emg_sum_th, elbow_height_th, user_id, trial_no, colift_force, release_speed)
+    def set_params(self, emg_sum_th=3000, elbow_height_th=0.2, user_id=0, trial_no=0, approach_speed=0.1, colift_force=15, release_speed=0.25):
+        print("params:", emg_sum_th, elbow_height_th, user_id, trial_no, approach_speed, colift_force, release_speed)
         self.emg_sum_th = rospy.set_param('/emg_sum_th', emg_sum_th)
         self.elbow_height_th = rospy.set_param('/elbow_height_th', elbow_height_th)
         self.userid = rospy.set_param('/userID', user_id)
         self.trial_no = rospy.set_param('/trialNO', trial_no)
+        rospy.set_param('/robot_approach_speed', approach_speed)
         rospy.set_param('/robot_colift_force', colift_force)
         rospy.set_param('/robot_release_speed', release_speed)
 

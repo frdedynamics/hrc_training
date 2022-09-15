@@ -209,6 +209,7 @@ class MainWindow(QMainWindow, Form_0):
 
         self.RecordPlot.robotForceLineEdit.setToolTip("13 - 40")
         self.RecordPlot.robotSpeedLineEdit.setToolTip("0.1 - 0.8")
+        self.RecordPlot.robotApproachSpeedLineEdit.setToolTip("0.2 (slow) - 0.03 (fast)")
         
         self.RecordPlot.recordtextEdit.setText("WELCOME to HVL Robotics HRC TRAINING GAME!")
         self.RecordPlot.recordtextEdit.verticalScrollBar().setValue(self.RecordPlot.recordtextEdit.verticalScrollBar().maximum())
@@ -326,9 +327,10 @@ class MainWindow(QMainWindow, Form_0):
         if(len(self.RecordPlot.elbowTresholdLineEdit.text())>0 and len(self.RecordPlot.emgTresholdLineEdit.text())>0):
             colift_force = int(self.RecordPlot.robotForceLineEdit.text())
             release_speed = float(self.RecordPlot.robotSpeedLineEdit.text())
+            approach_speed = float(self.RecordPlot.robotApproachSpeedLineEdit.text())
             elbow_th = float(self.RecordPlot.elbowTresholdLineEdit.text())
             emg_th = int(self.RecordPlot.emgTresholdLineEdit.text())
-            self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th, user_id=self.RecordPlot.selectedID, trial_no=self.RecordPlot.trial_no, colift_force=colift_force, release_speed=release_speed)
+            self.ros_node.set_params(elbow_height_th=elbow_th, emg_sum_th=emg_th, user_id=self.RecordPlot.selectedID, trial_no=self.RecordPlot.trial_no, approach_speed=approach_speed, colift_force=colift_force, release_speed=release_speed)
 
             self.RecordPlot.gripperInitiateButton.setEnabled(True)
         else:
