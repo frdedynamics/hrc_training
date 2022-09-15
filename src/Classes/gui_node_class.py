@@ -41,10 +41,28 @@ class GUInode:
         self.now.data = str(datetime.datetime.now())
         self.userid = 0
         self.trial_no = 0
+        rospy.set_param('/robot_move_started', False)
+        print("robot_move_param", rospy.get_param('/robot_move_started'))
+
     
     # Deleting (Calling destructor)
     def __del__(self):
         print('Destructor called, rosnode deleted.')
+
+    
+    def reset(self):
+        """Reset after Robot Stop the GUI node."""
+        self.score_val.data = _INIT_SCORE
+        self.start_time = 0
+        self.stop_time = 0 
+        self.button1_flag = False
+        self.button2_flag = False
+        self.registered_buttons = ["button1", "button2"]
+        self.game_over_flag = Bool()
+        self.game_over_flag.data = False
+        self.now = String()
+        self.now.data = str(datetime.datetime.now())
+        rospy.set_param('/robot_move_started', False)
         
 
     def init_subscribers_and_publishers(self):

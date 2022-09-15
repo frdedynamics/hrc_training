@@ -80,8 +80,6 @@ class MainWindow(QMainWindow, Form_0):
         self.thresholdsTimer.timeout.connect(self.measure_thresholds_update)
 
         self.logging_started_flag = False
-        if rospy.has_param('/robot_move_started'):
-            rospy.delete_param('/robot_move_started')
 
         self.human_proc = None
         self.myo_proc = None
@@ -350,7 +348,7 @@ class MainWindow(QMainWindow, Form_0):
             # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
             self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine_restartable.py"])
 
-            while not rospy.has_param('/robot_move_started'):
+            while not rospy.get_param('/robot_move_started'):
                 print("waiting for robot")
                 rospy.sleep(0.5)
                 if rospy.is_shutdown():
@@ -382,7 +380,7 @@ class MainWindow(QMainWindow, Form_0):
                 if rospy.has_param('/robot_move_started'):
                     rospy.set_param('/robot_move_started', False)
                 if rospy.has_param('/colift_set'):
-                    rospy.delete_param('/colift_set')
+                    rospy.set_param('/colift_set', False)
                 if rospy.has_param('/elbow_height_th'):
                     rospy.delete_param('/elbow_height_th')
                 if rospy.has_param('/emg_sum_th'):
@@ -392,8 +390,9 @@ class MainWindow(QMainWindow, Form_0):
                 # del self.ros_node 
                 # self.ros_node = GUInode()
                 # self.ros_node.init_subscribers_and_publishers()
-                self.ros_node.__init__()
-                self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
+                self.ros_node.reset()
+                self.ros_node.update()
+                # self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
             except AttributeError as e:
                 pass
             self.RecordPlot.robotMoveButton.setText("Robot Move")
