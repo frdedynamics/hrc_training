@@ -92,7 +92,7 @@ class GUInode:
 
 
     def set_params(self, emg_sum_th=3000, elbow_height_th=0.2, user_id=0, trial_no=0, approach_speed=0.1, colift_force=15, release_speed=0.25):
-        print("params:", emg_sum_th, elbow_height_th, user_id, trial_no, approach_speed, colift_force, release_speed)
+        print("PARAMS:", "emg_sum_th:",emg_sum_th, "elbow_height_th:",elbow_height_th, "user_id:",user_id, "trial_no:",trial_no, "approach_speed:",approach_speed, "colift_force:",colift_force, "release_speed:",release_speed)
         self.emg_sum_th = rospy.set_param('/emg_sum_th', emg_sum_th)
         self.elbow_height_th = rospy.set_param('/elbow_height_th', elbow_height_th)
         self.userid = rospy.set_param('/userID', user_id)
@@ -161,12 +161,16 @@ class GUInode:
     def button1_cb(self, msg):
         if msg.data == 0:
             self.button1_flag = True
+            print("button 1 pressed")
 
     def button2_cb(self, msg):
         if msg.data == 0:
             self.button2_flag = True
+            print("button 2 pressed")
 
     def game_over_flag_cb(self, msg):
         self.game_over_flag = msg
+        if self.game_over_flag == True:
+            print("Game over")
 
     
