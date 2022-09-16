@@ -88,6 +88,7 @@ class MainWindow(QMainWindow, Form_0):
         self.urdt_proc = None
         self.gripper_proc = None
         self.rosbag_proc = None
+        self.rtde_receive_proc = None
 
         self.robotMove_clicked_flag = False
 
@@ -225,6 +226,7 @@ class MainWindow(QMainWindow, Form_0):
         self.start_single_roslaunch('/launch/gui.launch') # I need this to set a UUID for later added nodes
         sleep(1)
         self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
+        self.rtde_receive_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/robot_force_pub.py"])
 
         self.RecordPlot.awindaButton.setEnabled(True)
 
@@ -356,6 +358,7 @@ class MainWindow(QMainWindow, Form_0):
         if not self.robotMove_clicked_flag:
             # self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/arm_motion_controller_py3/src/robot_move_node.py"])  ## For other PCs or multiple PCs this needs to be changes. Not modular.
             self.urdt_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/hrc_state_machine_restartable.py"])
+            
 
             while not rospy.get_param('/robot_move_started'):
                 print("waiting for robot")
@@ -431,8 +434,9 @@ class MainWindow(QMainWindow, Form_0):
             self.urdt_proc.send_signal(signal.SIGINT)
             self.gripper_proc.send_signal(signal.SIGINT)
             self.rosbag_proc.send_signal(signal.SIGINT)
+            self.rtde_receive_proc.send_signal(signal.SIGINT)
         except AttributeError as e:
-            pass
+            print("error in killing", e)
         p_kill1 = subprocess.Popen(["rosnode", "kill", "-a"]) # not sure if I need a return object. Keep it for now
         p_kill2 = subprocess.Popen(["pkill", "-9", "ros"])
         # TODO: kill Rviz manually
