@@ -1,0 +1,2 @@
+System started TIME:[2022-09-16 09:44:01.022045]
+robot_move_param False TIME:[2022-09-16 09:44:01.532042]
