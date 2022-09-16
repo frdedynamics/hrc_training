@@ -32,6 +32,31 @@ DATA_PATH = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/
 SELECTED_ID = 0
 
 
+#######
+# LOGGING
+
+orig_stdout = sys.stdout  # capture original state of stdout
+
+te = open('log.txt','w')  # File where you need to keep the logs
+
+class Unbuffered:
+    def __init__(self, stream):
+        self.stream = stream
+
+    def write(self, data):
+        self.stream.write(data)
+        self.stream.flush()
+        te.write(data.replace("\n", " [%s]\n" % str(datetime.datetime.now())))    # Write the data of stdout here to a text file as well
+
+    def flush(self):
+        pass
+
+sys.stdout=Unbuffered(sys.stdout)
+
+# LOGGING
+#######
+
+
 class RecordPlotWindow(QWidget, Form_0):
     def __init__(self, parent=None):
         super(RecordPlotWindow, self).__init__(parent)
@@ -452,6 +477,10 @@ class MainWindow(QMainWindow, Form_0):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    print("System started")
     # app.setStyleSheet(stylesheet)
     w = MainWindow()
+    sys.stdout = orig_stdout  # put back the original state of stdout
+    te.flush()  # forces python to write to file
+    te.close()  # closes the log file
     sys.exit(app.exec_())
