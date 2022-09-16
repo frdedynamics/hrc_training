@@ -161,12 +161,10 @@ class GUInode:
     def button1_cb(self, msg):
         if msg.data == 0:
             self.button1_flag = True
-            print("button 1 pressed")
 
     def button2_cb(self, msg):
         if msg.data == 0:
             self.button2_flag = True
-            print("button 2 pressed")
 
     def game_over_flag_cb(self, msg):
         self.game_over_flag = msg
