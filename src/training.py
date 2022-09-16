@@ -452,36 +452,10 @@ class MainWindow(QMainWindow, Form_0):
 
 
 
-#######
-# LOGGING
-
-orig_stdout = sys.stdout  # capture original state of stdout
-
-class Unbuffered:
-    def __init__(self, stream):
-        self.stream = stream
-
-    def write(self, data):
-        self.stream.write(data)
-        self.stream.flush()
-        te.write(data.replace("\n", " TIME:[%s]\n" % str(datetime.datetime.now())))    # Write the data of stdout here to a text file as well
-
-    def flush(self):
-        pass
-
-sys.stdout=Unbuffered(sys.stdout)
-
-# LOGGING
-#######
-
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    te = open(DATA_PATH+str(datetime.datetime.now())+'.txt','w')  # File where you need to keep the logs
+    """LOG: python3 -u training.py | tee >(ts "%d-%m-%y %H_%M_%S" > /home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/terminal_logs/log_file.log)"""
     print("System started")
     # app.setStyleSheet(stylesheet)
     w = MainWindow()
-    sys.stdout = orig_stdout  # put back the original state of stdout
-    te.flush()  # forces python to write to file
-    te.close()  # closes the log file
     sys.exit(app.exec_())
