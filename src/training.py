@@ -226,7 +226,8 @@ class MainWindow(QMainWindow, Form_0):
         self.start_single_roslaunch('/launch/gui.launch') # I need this to set a UUID for later added nodes
         sleep(1)
         self.add_rosnode("hrc_training", "visualize_and_gamify.py", "visualize_and_gamify")
-        self.rtde_receive_proc = subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/robot_force_pub.py"])
+        subprocess.Popen(["/home/gizem/venv/venv-ur/bin/python3.8", "/home/gizem/catkin_ws/src/imu_human_pkg/imu_human_pkg/src/robot_force_pub.py"])
+        subprocess.Popen(["rosrun","rosserial_python","serial_node.py","_port:=/dev/ttyACM1","_baud:=9600"])
 
         self.RecordPlot.awindaButton.setEnabled(True)
 
