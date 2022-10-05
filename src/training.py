@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from turtle import color
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -16,6 +17,7 @@ from os import chdir
 from Classes.main import Ui_Form as Form_0
 from Classes.gui_node_class import GUInode
 from Classes.new_user import Ui_Dialog as NewUserDialog
+from Classes.edit_user import Ui_Dialog as EditUserDialog
 
 import Classes.randomIDcreator as randomIDcreator
 
@@ -63,6 +65,23 @@ class NewUser(QDialog, NewUserDialog):
     #     print("New user is ready with ID number create_user_folder: ", self.userID)
 
 
+class EditUser(QDialog, EditUserDialog):
+    def __init__(self, parent=None):
+        super(EditUser, self).__init__(parent)
+        self.setupUi(self)
+        self.userID = 0
+
+    def edit_user(self, name, height, arm_length, left_handed):
+        status = randomIDcreator.main(name, height, arm_length, left_handed, mode="edit")
+        if not status:
+            self.IDlabel.clear()
+            self.IDlabel.setText("FAIL")
+        else:
+            self.IDlabel.clear()
+            self.IDlabel.setText("OK")
+            self.userID = int(name)
+
+
 class MainWindow(QMainWindow, Form_0):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -97,6 +116,7 @@ class MainWindow(QMainWindow, Form_0):
         # New user dialog initialization
         self.Dialog = QDialog()
         self.NewUserTool = NewUser(self)
+        self.EditUserTool = EditUser(self)
 
 
     def open_new_user_dialog(self):
@@ -120,6 +140,23 @@ class MainWindow(QMainWindow, Form_0):
         self.Dialog.show()
         self.Dialog.exec_()
 
+    def open_edit_user_dialog(self):
+        self.EditUserTool.setupUi(self.Dialog)
+
+        # call randomIDcreator script here
+        self.EditUserTool.createButton.clicked.connect(lambda: self.EditUserTool.edit_user(
+                                                                self.EditUserTool.nameLineEdit.text(),
+                                                                self.EditUserTool.heightLineEdit.text(),
+                                                                self.EditUserTool.armLengthLineEdit.text(),
+                                                                self.EditUserTool.leftHandcheckBox.isChecked()))
+
+
+        self.EditUserTool.buttonBox.accepted.connect(self.custom_edit_accepted)
+        self.EditUserTool.buttonBox.rejected.connect(self.custom_closeEvent)
+
+        self.Dialog.show()
+        self.Dialog.exec_()
+
     def custom_closeEvent(self):
         self.RecordPlot.recordtextEdit.append("No user created")
         #TODO: user already exist. delete manually
@@ -132,6 +169,18 @@ class MainWindow(QMainWindow, Form_0):
             self.RecordPlot.recordtextEdit.append("New user is ready with ID number: "+str(self.NewUserTool.userID))
         except FileExistsError:
             self.RecordPlot.recordtextEdit.append("The user is already registered:  "+str(self.NewUserTool.userID))
+
+    def custom_edit_accepted(self):
+        SELECTED_ID = self.EditUserTool.userID
+        if len(self.EditUserTool.nameLineEdit.text()) == 0:
+            self.RecordPlot.recordtextEdit.append("Enter user ID")
+            self.EditUserTool.IDlabel.setText("FAIL")
+        elif SELECTED_ID == 0:
+            self.RecordPlot.recordtextEdit.append("Enter user ID")
+            self.EditUserTool.IDlabel.setText("FAIL")
+        else:
+            self.RecordPlot.recordtextEdit.append("User editted with ID number: "+str(self.EditUserTool.userID))
+
 
 
     def select_user(self):
@@ -204,6 +253,7 @@ class MainWindow(QMainWindow, Form_0):
         self.RecordPlot.buttonBox.clicked.connect(self.stop_all_roslaunch)
 
         self.RecordPlot.newUserButton.clicked.connect(self.open_new_user_dialog)
+        self.RecordPlot.editUserButton.clicked.connect(self.open_edit_user_dialog)
         self.RecordPlot.selectUserButton.clicked.connect(self.select_user)
 
         self.RecordPlot.trialComboBox.addItems([str(x) for x in range(1,11)])

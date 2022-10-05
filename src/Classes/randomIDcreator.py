@@ -8,6 +8,7 @@ Adds the new user into the CSV file
 
 from sys import argv, exit
 import csv, random
+import pandas as pd
 data_path = '/home/gizem/Insync/giat@hvl.no/Onedrive/HVL/Human_Experiments/data/'
 id_filename = data_path+'id_list.csv'
 
@@ -45,16 +46,35 @@ def add_new_user(filename, id, name, height, arm_length, left_handed):
     with open(filename, 'a+', newline='') as csvfile:
         writer_object = csv.writer(csvfile)
         writer_object.writerow([id, name, height, arm_length, left_handed])
-        csvfile.close()       
+        csvfile.close()  
+    print("New ID created: ", id)     
+
+
+def edit_user(filename, id, height, arm_length, left_handed):
+    df = pd.read_csv(filename)
+    if df.loc[df['ID'] == int(id)].empty:
+        print("no user found")
+        return False
+    else:
+        print("user found")
+        df.loc[df['ID'] == int(id), ['Height', 'Arm_Length','Left_Handed']] = [height, arm_length, left_handed]
+        df.to_csv(filename, index=False)
+        print("ID editted: ", id) 
+        return True 
 
 
 
-def main(name, height, arm_length, left_handed=False):
-    new_id = create_and_check_ID(get_ID_list(id_filename))
-    # add_new_user(id_filename, str(new_id), "asd", "asd", "asd")
-    add_new_user(id_filename, str(new_id), name, height, arm_length, left_handed)
-    print("New ID created: ", new_id)
-    return new_id
+def main(name, height, arm_length, left_handed=False, mode="new"):
+    if mode == "new":
+        new_id = create_and_check_ID(get_ID_list(id_filename))
+        # add_new_user(id_filename, str(new_id), "asd", "asd", "asd")
+        add_new_user(id_filename, str(new_id), name, height, arm_length, left_handed)
+        return new_id
+    elif mode == "edit":
+        return edit_user(id_filename, name, height, arm_length, left_handed) # name is id here
+    else:
+        print("user edit/create fail")
+        return 0
 
 if __name__ == '__main__':
     if not len(argv) == 5:
